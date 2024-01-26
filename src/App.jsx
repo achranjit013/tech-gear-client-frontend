@@ -1,5 +1,17 @@
+import { Routes, Route } from "react-router-dom";
+import Home from "./pages/home/Home";
+import Products from "./pages/product/Products";
+
 function App() {
-  return <h1 className="text-3xl font-bold underline">Hello world!</h1>;
+  return (
+    <>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/products" element={<Products />} />
+        {/* <Route path="/" element={< />} /> */}
+      </Routes>
+    </>
+  );
 }
 
 export default App;
