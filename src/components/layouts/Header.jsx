@@ -24,16 +24,11 @@ const Header = () => {
     const localStorageItems = localStorageItemsString
       ? JSON.parse(localStorageItemsString)
       : [];
-    // const localStorageItems =
-    //   JSON.parse(localStorage.getItem("cartItems")) || [];
-    console.log(localStorageItems);
 
     if (localStorageItems) {
       dispatch(setCartItemsAction(localStorageItems));
     }
   }, [dispatch]);
-  console.log("first");
-  console.log(cartItems);
 
   return (
     <header className="sticky inset-x-0 top-0 z-50 bg-gray-800 text-neutral-600 dark:text-neutral-200">

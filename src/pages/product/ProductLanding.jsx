@@ -20,12 +20,9 @@ function classNames(...classes) {
 const ProductLanding = () => {
   const dispatch = useDispatch();
   const { slug } = useParams();
-  console.log(slug);
 
   const { selectedProduct } = useSelector((state) => state.productInfo);
-  console.log(selectedProduct);
   const { selectedCategory } = useSelector((state) => state.categoryInfo);
-  console.log(selectedCategory);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -110,9 +107,6 @@ const ProductLanding = () => {
       </svg>
     );
   }
-
-  console.log(selectedProduct);
-  console.log(selected);
 
   return (
     <MainLayout>

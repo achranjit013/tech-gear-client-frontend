@@ -23,13 +23,9 @@ const plans = [
 ];
 
 const ProductSize = () => {
-  console.log(plans[0]);
   const [selected, setSelected] = useState(plans[0]);
-  console.log(selected);
 
   const changeOnSelect = (e) => {
-    // const { value } = e.target;
-    console.log(e);
     setSelected(e);
   };
 
