@@ -3,12 +3,12 @@ import Header from "./Header";
 import Footer from "./Footer";
 import TopNav from "./TopNav";
 
-const MainLayout = ({ children, title }) => {
+const MainLayout = ({ children, displayCart }) => {
   return (
     <div className="relative">
       <Header />
 
-      <main className="min-h-[calc(100vh-4.5rem)]">{children}</main>
+      <main className="min-h-[calc(100vh-50rem)]">{children}</main>
 
       <Footer />
     </div>
