@@ -1,9 +1,8 @@
 import React from "react";
 import Header from "./Header";
 import Footer from "./Footer";
-import TopNav from "./TopNav";
 
-const MainLayout = ({ children, displayCart }) => {
+const MainLayout = ({ children }) => {
   return (
     <div className="relative">
       <Header />
