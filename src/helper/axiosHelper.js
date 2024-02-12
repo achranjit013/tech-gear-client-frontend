@@ -17,6 +17,7 @@ const axiosProcessor = async ({
   method,
   url,
   data,
+  params,
   isPrivate,
   refreshToken,
 }) => {
@@ -24,6 +25,7 @@ const axiosProcessor = async ({
     const token = refreshToken ? getRefreshJWT() : getAccessJWT();
 
     const headers = {
+      // ContentType: "application/json",
       Authorization: isPrivate ? token : null,
     };
 
@@ -48,6 +50,14 @@ export const getProducts = (slug) => {
   return axiosProcessor({
     method: "get",
     url: slug ? productAPI + "/" + slug : productAPI,
+  });
+};
+
+// products
+export const getProductsForCart = (data) => {
+  return axiosProcessor({
+    method: "get",
+    url: productAPI + "/cart-item/" + data.slug + "&" + data.size,
   });
 };
 

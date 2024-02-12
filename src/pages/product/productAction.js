@@ -21,6 +21,14 @@ export const getSelectedProductAction = (slug) => async (dispatch) => {
   }
 };
 
+// export const getAllCartsAction = (slug) => async (dispatch) => {
+//   const { status, findResult } = await getProducts(slug);
+
+//   if (status === "success") {
+//     dispatch(setSelectedProduct(findResult));
+//   }
+// };
+
 export const setCartItemsAction = (items) => (dispatch) => {
   dispatch(setCartItems(items));
 };

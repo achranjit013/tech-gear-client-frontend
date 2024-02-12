@@ -5,6 +5,7 @@ import { XMarkIcon } from "@heroicons/react/24/outline";
 import TopNav from "./TopNav";
 import { useDispatch, useSelector } from "react-redux";
 import { setCartItemsAction } from "../../pages/product/productAction";
+import CartPopover from "../cart/CartPopover";
 
 // to do.. navigation acc to categories stored in db
 const navigation = [
@@ -17,7 +18,6 @@ const navigation = [
 const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const dispatch = useDispatch();
-  const { cartItems } = useSelector((state) => state.productInfo);
 
   useEffect(() => {
     const localStorageItemsString = localStorage.getItem("cartItems");
@@ -57,6 +57,7 @@ const Header = () => {
         </div>
 
         <div className="flex flex-1 justify-end order-2 gap-3">
+          {/* serach bar */}
           <div className="relative hidden sm:block">
             <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
               <svg
@@ -83,34 +84,10 @@ const Header = () => {
             />
           </div>
 
-          <button
-            type="button"
-            className="relative inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
-          >
-            <div className="top-0.5 absolute left-[1.38rem]">
-              {cartItems.length > 0 && (
-                <p className="flex h-2 w-2 items-center justify-center rounded-full bg-red-500 p-2 text-xs text-white">
-                  {cartItems.reduce((accumulator, item) => {
-                    return accumulator + item.qty;
-                  }, 0)}
-                </p>
-              )}
-            </div>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth="1.5"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z"
-              />
-            </svg>
-          </button>
+          {/* cart popover */}
+          <CartPopover />
 
+          {/* hamburger menu icon */}
           <button
             type="button"
             className="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg lg:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"

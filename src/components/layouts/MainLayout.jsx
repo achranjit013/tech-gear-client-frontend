@@ -7,7 +7,7 @@ const MainLayout = ({ children }) => {
     <div className="relative">
       <Header />
 
-      <main className="min-h-[calc(100vh-50rem)]">{children}</main>
+      <main className="min-h-[calc(100vh-25rem)] bg-gray-100">{children}</main>
 
       <Footer />
     </div>
