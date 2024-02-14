@@ -14,6 +14,7 @@ const LoginForm = () => {
   const passRef = useRef(null);
 
   const { user } = useSelector((state) => state.userInfo);
+  console.log(location?.state?.from?.location?.pathname);
   const fromLocation =
     location?.state?.from?.location?.pathname || "/dashboard";
 

@@ -1,4 +1,4 @@
-import { getUser } from "../../helper/axiosHelper";
+import { getNewAccessJWT, getUser } from "../../helper/axiosHelper";
 import { setUser } from "./userSlice";
 
 export const getUserInfoAction = () => async (dispatch) => {
@@ -11,11 +11,13 @@ export const getUserInfoAction = () => async (dispatch) => {
 export const autoLogin = () => async (dispatch) => {
   // check if we have access jwt, then fetch user
   const accessJWT = sessionStorage.getItem("accessJWT");
+  console.log(accessJWT);
   if (accessJWT) {
     return dispatch(getUserInfoAction());
   }
 
   const refreshJWT = localStorage.getItem("refreshJWT");
+  console.log(refreshJWT);
 
   // get access jwt
   if (refreshJWT) {

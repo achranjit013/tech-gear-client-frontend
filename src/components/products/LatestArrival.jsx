@@ -1,13 +1,7 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Link } from "react-router-dom";
-import {
-  getLatestArrivalsAction,
-  setCartItemsAction,
-} from "../../pages/product/productAction";
+import { getLatestArrivalsAction } from "../../pages/product/productAction";
 import { useDispatch, useSelector } from "react-redux";
-import { Fragment } from "react";
-import { Menu, Transition } from "@headlessui/react";
-import { ChevronDownIcon } from "@heroicons/react/20/solid";
 
 const LatestArrival = () => {
   const dispatch = useDispatch();
@@ -16,10 +10,6 @@ const LatestArrival = () => {
   useEffect(() => {
     dispatch(getLatestArrivalsAction());
   }, [dispatch]);
-
-  const classNames = (...classes) => {
-    return classes.filter(Boolean).join(" ");
-  };
 
   return (
     <div className="bg-white">

@@ -4,8 +4,12 @@ import { Dialog } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import TopNav from "./TopNav";
 import { useDispatch, useSelector } from "react-redux";
-import { setCartItemsAction } from "../../pages/product/productAction";
 import CartPopover from "../cart/CartPopover";
+import {
+  getAllCartItemsAction,
+  setCartItemsAction,
+} from "../../pages/cart/cartAction";
+import { autoLogin } from "../../pages/user/userAction";
 
 // to do.. navigation acc to categories stored in db
 const navigation = [
@@ -16,19 +20,18 @@ const navigation = [
 ];
 
 const Header = () => {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const dispatch = useDispatch();
+  const { user } = useSelector((state) => state.userInfo);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => {
-    const localStorageItemsString = localStorage.getItem("cartItems");
-    const localStorageItems = localStorageItemsString
-      ? JSON.parse(localStorageItemsString)
-      : [];
-
-    if (localStorageItems) {
-      dispatch(setCartItemsAction(localStorageItems));
+    if (user?._id) {
+      dispatch(getAllCartItemsAction());
+    } else {
+      dispatch(autoLogin());
+      dispatch(setCartItemsAction());
     }
-  }, [dispatch]);
+  }, [dispatch, user?._id]);
 
   return (
     <header className="sticky inset-x-0 top-0 z-50 bg-gray-800 text-neutral-600 dark:text-neutral-200">
@@ -173,18 +176,37 @@ const Header = () => {
                 ))}
               </div>
               <div className="py-6">
-                <Link
-                  to="/login"
-                  className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
-                >
-                  Log In
-                </Link>
-                <Link
-                  to="/signup"
-                  className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
-                >
-                  Create Account
-                </Link>
+                {user?._id ? (
+                  <>
+                    <Link
+                      to="/my-account"
+                      className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
+                    >
+                      My Account
+                    </Link>
+                    <Link
+                      to="/"
+                      className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
+                    >
+                      Log Out
+                    </Link>
+                  </>
+                ) : (
+                  <>
+                    <Link
+                      to="/login"
+                      className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
+                    >
+                      Log In
+                    </Link>
+                    <Link
+                      to="/signup"
+                      className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
+                    >
+                      Create Account
+                    </Link>
+                  </>
+                )}
               </div>
             </div>
           </div>

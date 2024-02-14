@@ -1,9 +1,5 @@
 import { getProducts } from "../../helper/axiosHelper";
-import {
-  setCartItems,
-  setLatestArrivals,
-  setSelectedProduct,
-} from "./productSlice";
+import { setLatestArrivals, setSelectedProduct } from "./productSlice";
 
 export const getLatestArrivalsAction = () => async (dispatch) => {
   const { status, findResult } = await getProducts();
@@ -21,14 +17,6 @@ export const getSelectedProductAction = (slug) => async (dispatch) => {
   }
 };
 
-// export const getAllCartsAction = (slug) => async (dispatch) => {
-//   const { status, findResult } = await getProducts(slug);
-
-//   if (status === "success") {
-//     dispatch(setSelectedProduct(findResult));
-//   }
+// export const setCartItemsAction = (items) => (dispatch) => {
+//   dispatch(setCartItems(items));
 // };
-
-export const setCartItemsAction = (items) => (dispatch) => {
-  dispatch(setCartItems(items));
-};

@@ -1,32 +1,36 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { setCartItemsAction } from "../../pages/product/productAction";
-import { getProductsForCart } from "../../helper/axiosHelper";
+import { getProducts, getProductsForCart } from "../../helper/axiosHelper";
+import {
+  deleteCartItemAction,
+  setCartItemsAction,
+  updateCartItemAction,
+} from "../../pages/cart/cartAction";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
 const CartItems = () => {
-  let count = 0;
   const dispatch = useDispatch();
-  const { cartItems } = useSelector((state) => state.productInfo);
+  const { cartItems } = useSelector((state) => state.cartInfo);
+  const { user } = useSelector((state) => state.userInfo);
   const [revisedCartItemss, setRevisedCartItemss] = useState([]);
 
   useEffect(() => {
     setRevisedCartItemss([]); // clearing the state on each mouse event
 
     // grab the product id from cart and fetch fresh product data from database
-
     const fetchData = async () => {
       try {
-        const promises = cartItems?.map(async ({ slug, size, qty }) => {
-          const { findResult } = await getProductsForCart({ slug, size });
+        const promises = cartItems?.map(async ({ _id, slug, size, qty }) => {
+          const { findResult } = await getProducts(slug, size);
 
           if (findResult?._id) {
             const obj = {
-              _id: findResult._id,
+              cartId: _id,
+              productId: findResult._id,
               slug: findResult.slug,
               name: findResult.name,
               sku: findResult.sku,
@@ -36,7 +40,8 @@ const CartItems = () => {
               stockCount: findResult.variants[0]?.qty,
               stockStatus:
                 findResult.variants[0]?.qty > 0
-                  ? findResult.variants[0]?.qty > qty
+                  ? findResult.variants[0]?.qty >
+                    Math.ceil(0.2 * findResult.variants[0]?.qty)
                     ? "in stock"
                     : "low in stock"
                   : "out of stock",
@@ -68,104 +73,39 @@ const CartItems = () => {
 
   // update the qty of the item in cart (either add or subtract) function
   const handleOnQtyChange = (item) => {
-    // Retrieve the cart items from local storage
-    const localStorageItemsString = localStorage.getItem("cartItems");
-    const localStorageItems = JSON.parse(localStorageItemsString);
+    const obj = {
+      productId: item?.productId,
+      userId: user?._id,
+      _id: item?.cartId,
+      size: item?.selectedSize,
+      slug: item?.slug,
+      status: item?.status,
+      qty: (item?.action === "+"
+        ? Number(item?.selectedQty) + 1
+        : Number(item?.selectedQty) - 1
+      ).toString(),
+    };
 
-    // Find the index of the item in the existing array in local storage
-    const existingItemIndex = localStorageItems.findIndex(
-      (currentItem) =>
-        currentItem._id === item._id && currentItem.size === item.selectedSize
-    );
-
-    // Find the index of the item in the existing array in revisedCartItemss
-    const existingCartItemIndex = revisedCartItemss.findIndex(
-      (currentItem) =>
-        currentItem._id === item._id &&
-        currentItem.selectedSize === item.selectedSize
-    );
-
-    if (existingItemIndex !== -1) {
-      // If the item exists, update the quantity
-      if (item.action === "+") {
-        localStorageItems[existingItemIndex].qty += 1;
-
-        // set the updated qty, price for display
-        revisedCartItemss[existingCartItemIndex].selectedQty += 1;
-        revisedCartItemss[existingCartItemIndex].totalPrice = (
-          revisedCartItemss[existingCartItemIndex].price *
-          revisedCartItemss[existingCartItemIndex].selectedQty
-        ).toFixed(2);
-      } else if (item.action === "-") {
-        if (localStorageItems[existingItemIndex].qty === 1) {
-          if (
-            window.confirm(
-              `Are you sure to remove ${item.name} - ${item.selectedSize} from your cart?`
-            )
-          ) {
-            // take out the current item from localStorageItems
-            localStorageItems.splice(existingItemIndex, 1);
-
-            // set the revisedCartItemss array with updated values
-            setRevisedCartItemss(
-              revisedCartItemss.filter(
-                (filterItem) =>
-                  filterItem._id !== item._id ||
-                  filterItem.selectedSize !== item.selectedSize
-              )
-            );
-          }
-        } else {
-          // if the qty is more than 1, just decrease the qty
-          localStorageItems[existingItemIndex].qty -= 1;
-
-          // set the updated qty, price for display
-          revisedCartItemss[existingCartItemIndex].selectedQty -= 1;
-          revisedCartItemss[existingCartItemIndex].totalPrice = (
-            revisedCartItemss[existingCartItemIndex].price *
-            revisedCartItemss[existingCartItemIndex].selectedQty
-          ).toFixed(2);
-        }
-      }
-
-      // Save the updated array back into local storage
-      localStorage.setItem("cartItems", JSON.stringify(localStorageItems));
-
-      // Dispatch action to update Redux store
-      dispatch(setCartItemsAction(localStorageItems));
+    if (obj.qty === "0" || obj.qty === 0) {
+      handleOnRemove({
+        cartId: item?.cartId,
+        productId: item?.productId,
+        selectedSize: item?.selectedSize,
+        name: item?.name,
+      });
+    } else {
+      dispatch(updateCartItemAction(obj));
     }
   };
 
   // remove item from cart function
   const handleOnRemove = (item) => {
-    // Retrieve the cart items from local storage
-    const localStorageItemsString = localStorage.getItem("cartItems");
-    const localStorageItems = JSON.parse(localStorageItemsString);
-
-    // Find the index of the item in the existing array
-    const existingItemIndex = localStorageItems.findIndex(
-      (currentItem) =>
-        currentItem._id === item._id && currentItem.size === item.selectedSize
-    );
-
-    if (existingItemIndex !== -1) {
-      // take out the current item from localStorageItems
-      localStorageItems.splice(existingItemIndex, 1);
-
-      // Save the updated array back into local storage
-      localStorage.setItem("cartItems", JSON.stringify(localStorageItems));
-
-      // Dispatch action to update Redux store
-      dispatch(setCartItemsAction(localStorageItems));
-
-      // set the revisedCartItemss array with new values
-      setRevisedCartItemss(
-        revisedCartItemss.filter(
-          (filterItem) =>
-            filterItem._id !== item._id ||
-            filterItem.selectedSize !== item.selectedSize
-        )
-      );
+    if (
+      window.confirm(
+        `Are you sure to remove ${item.name} / size: ${item.selectedSize} from your cart?`
+      )
+    ) {
+      dispatch(deleteCartItemAction({ userId: user?._id, ...item }));
     }
   };
 
@@ -175,7 +115,10 @@ const CartItems = () => {
         <div className="divide-y divide-gray-500/20 rounded-lg border">
           <div className="px-4 py-6">
             <span className="text-md font-mono text-gray-900">
-              {revisedCartItemss?.length} items in your cart!
+              {revisedCartItemss.reduce((accumulator, { selectedQty }) => {
+                return accumulator + Number(selectedQty);
+              }, 0)}{" "}
+              items in your cart!
             </span>
           </div>
           {/* cart items */}
@@ -192,7 +135,9 @@ const CartItems = () => {
                 sku,
                 stockCount,
                 thumbnail,
-                _id,
+                productId,
+                cartId,
+                slug,
               },
               i
             ) => (
@@ -216,7 +161,7 @@ const CartItems = () => {
                       <span
                         className={classNames(
                           stockCount > 0
-                            ? stockCount > selectedQty
+                            ? stockCount > Math.ceil(0.2 * stockCount)
                               ? "bg-green-600"
                               : "bg-orange-600"
                             : "bg-red-600",
@@ -233,9 +178,11 @@ const CartItems = () => {
                           className="cursor-pointer rounded-l bg-gray-900 h-8 w-8 duration-100 hover:bg-gray-800"
                           onClick={() =>
                             handleOnQtyChange({
-                              _id,
+                              cartId,
+                              productId,
                               selectedSize,
                               selectedQty,
+                              slug,
                               name,
                               action: "-",
                             })
@@ -246,9 +193,9 @@ const CartItems = () => {
                         </button>
                         <span
                           className={classNames(
-                            stockCount > selectedQty
-                              ? "text-gray-900"
-                              : "text-orange-600",
+                            selectedQty > stockCount
+                              ? "text-orange-600"
+                              : "text-gray-900",
                             "h-8 w-8 border-y-2 border-gray-900 bg-gray-100 text-sm outline-none flex items-center justify-center"
                           )}
                         >
@@ -259,9 +206,11 @@ const CartItems = () => {
                           className="cursor-pointer rounded-r bg-gray-900 h-8 w-8 duration-100 hover:bg-gray-800"
                           onClick={() =>
                             handleOnQtyChange({
-                              _id,
+                              cartId,
+                              productId,
                               selectedSize,
                               selectedQty,
+                              slug,
                               name,
                               action: "+",
                             })
@@ -297,7 +246,12 @@ const CartItems = () => {
                           <button
                             className="text-red-600 text-xs underline"
                             onClick={() =>
-                              handleOnRemove({ _id, selectedSize })
+                              handleOnRemove({
+                                cartId,
+                                productId,
+                                selectedSize,
+                                name,
+                              })
                             }
                           >
                             remove

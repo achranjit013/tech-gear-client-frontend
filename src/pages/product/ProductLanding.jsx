@@ -1,15 +1,13 @@
 import React, { useEffect, useState, Fragment } from "react";
-import {
-  StarIcon,
-  CheckIcon,
-  ChevronUpDownIcon,
-} from "@heroicons/react/20/solid";
+import { StarIcon, ChevronUpDownIcon } from "@heroicons/react/20/solid";
 import { RadioGroup, Listbox, Transition } from "@headlessui/react";
 import MainLayout from "../../components/layouts/MainLayout";
 import { Link, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { getSelectedProductAction, setCartItemsAction } from "./productAction";
+import { getSelectedProductAction } from "./productAction";
 import { getSelectedProductCategoryAction } from "../category/categoryAction";
+import { postNewCartItemAction } from "../cart/cartAction";
+import { autoLogin } from "../user/userAction";
 
 const reviews = { href: "#", average: 4, totalCount: 117 };
 
@@ -20,9 +18,13 @@ function classNames(...classes) {
 const ProductLanding = () => {
   const dispatch = useDispatch();
   const { slug } = useParams();
-
+  const { user } = useSelector((state) => state.userInfo);
   const { selectedProduct } = useSelector((state) => state.productInfo);
   const { selectedCategory } = useSelector((state) => state.categoryInfo);
+
+  const [productThumbnail, setProductThumbnail] = useState("");
+  const [selected, setSelected] = useState(null);
+  const [checked, setChecked] = useState(1);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -42,11 +44,9 @@ const ProductLanding = () => {
       setSelected(selectedProduct.variants[0]); //default variant
       setProductThumbnail(selectedProduct.thumbnail); //default thumbnail
     }
-  }, [dispatch, slug, selectedProduct?._id]);
 
-  const [productThumbnail, setProductThumbnail] = useState("");
-  const [selected, setSelected] = useState(null);
-  const [checked, setChecked] = useState(1);
+    dispatch(autoLogin());
+  }, [dispatch, slug, selectedProduct?._id]);
 
   const changeOnSelect = (selectedSize) => {
     const selectedVariant = selectedProduct.variants.find(
@@ -57,40 +57,19 @@ const ProductLanding = () => {
     setChecked(1);
   };
 
-  const handleOnCartBtnSubmit = (e) => {
+  const handleOnCartBtnSubmit = async (e) => {
     e.preventDefault();
 
-    // Retrieve the cart items from local storage
-    const localStorageItemsString = localStorage.getItem("cartItems");
-    const localStorageItems = localStorageItemsString
-      ? JSON.parse(localStorageItemsString)
-      : [];
-
     const obj = {
-      _id: selectedProduct?._id,
+      userId: user?._id,
+      productId: selectedProduct?._id,
       slug: selectedProduct?.slug,
       size: selected?.size,
-      qty: checked,
+      qty: checked.toString(),
+      status: "active",
     };
 
-    // Find the index of the item in the existing array
-    const existingItemIndex = localStorageItems.findIndex(
-      (item) => item._id === obj._id && item.size === obj.size
-    );
-
-    if (existingItemIndex !== -1) {
-      // If the item exists, update the quantity
-      localStorageItems[existingItemIndex].qty = obj.qty;
-    } else {
-      // If the item doesn't exist, push the new object
-      localStorageItems.push(obj);
-    }
-
-    // Save the updated array back into local storage
-    localStorage.setItem("cartItems", JSON.stringify(localStorageItems));
-
-    // Dispatch action to update Redux store
-    dispatch(setCartItemsAction(localStorageItems));
+    dispatch(postNewCartItemAction(obj));
   };
 
   function CheckIcon(props) {

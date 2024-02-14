@@ -2,9 +2,9 @@ import React, { useState } from "react";
 import { Popover, Transition } from "@headlessui/react";
 import { Fragment } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setCartItemsAction } from "../../pages/product/productAction";
-import { getProductsForCart } from "../../helper/axiosHelper";
+import { getProducts } from "../../helper/axiosHelper";
 import { Link } from "react-router-dom";
+import { setCartItemsAction } from "../../pages/cart/cartAction";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -12,7 +12,7 @@ function classNames(...classes) {
 
 const CartPopover = () => {
   const dispatch = useDispatch();
-  const { cartItems } = useSelector((state) => state.productInfo);
+  const { cartItems } = useSelector((state) => state.cartInfo);
   const [revisedCartItems, setRevisedCartItems] = useState([]);
   const [isShowing, setIsShowing] = useState(false); //to show cart window on mouse hover
 
@@ -21,7 +21,7 @@ const CartPopover = () => {
 
     // grab the product id from cart and fetch fresh product data from database
     cartItems?.map(async ({ slug, size, qty }) => {
-      const { findResult } = await getProductsForCart({ slug, size });
+      const { findResult } = await getProducts(slug, size);
       if (findResult?._id) {
         const obj = {
           _id: findResult._id,
@@ -166,10 +166,10 @@ const CartPopover = () => {
             onMouseLeave={() => setIsShowing(false)}
           >
             <div className="top-0.5 absolute left-[1.38rem]">
-              {cartItems.length > 0 && (
+              {cartItems?.length > 0 && (
                 <p className="flex h-2 w-2 items-center justify-center rounded-full bg-red-500 p-2 text-xs text-white">
-                  {cartItems.reduce((accumulator, item) => {
-                    return accumulator + item.qty;
+                  {cartItems.reduce((accumulator, { qty }) => {
+                    return accumulator + Number(qty);
                   }, 0)}
                 </p>
               )}
@@ -222,7 +222,13 @@ const CartPopover = () => {
                 <div className="bg-gray-50 p-3">
                   <span className="flex flex-col items-start">
                     <span className="text-md font-mono text-gray-900">
-                      {revisedCartItems?.length} items in your cart!
+                      {revisedCartItems.reduce(
+                        (accumulator, { selectedQty }) => {
+                          return accumulator + Number(selectedQty);
+                        },
+                        0
+                      )}{" "}
+                      items in your cart!
                     </span>
                     {/* {!isEnoughQty && (
         <span className="text-white text-xs bg-red-500 rounded-lg p-1">

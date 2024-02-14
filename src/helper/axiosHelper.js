@@ -3,6 +3,7 @@ import axios from "axios";
 const rootAPI = import.meta.env.VITE_SERVER_ROOT + "/api/v1";
 const productAPI = rootAPI + "/products";
 const categoryAPI = rootAPI + "/categories";
+const cartAPI = rootAPI + "/cart";
 const userAPI = rootAPI + "/users";
 
 const getAccessJWT = () => {
@@ -17,7 +18,6 @@ const axiosProcessor = async ({
   method,
   url,
   data,
-  params,
   isPrivate,
   refreshToken,
 }) => {
@@ -38,6 +38,15 @@ const axiosProcessor = async ({
 
     return response.data;
   } catch (error) {
+    if (error.response?.data?.message.includes("jwt expired")) {
+      const { accessJWT } = await getNewAccessJWT();
+
+      if (accessJWT) {
+        sessionStorage.setItem("accessJWT", accessJWT);
+        return axiosProcessor({ method, url, data, isPrivate, refreshToken });
+      }
+    }
+
     return {
       status: "error",
       message: error.message,
@@ -45,15 +54,20 @@ const axiosProcessor = async ({
   }
 };
 
-// products
-export const getProducts = (slug) => {
+// get products
+export const getProducts = (slug, size) => {
   return axiosProcessor({
     method: "get",
-    url: slug ? productAPI + "/" + slug : productAPI,
+    url:
+      slug && size
+        ? productAPI + "/" + slug + "/" + size
+        : slug
+        ? productAPI + "/" + slug
+        : productAPI,
   });
 };
 
-// products
+// get products for cart
 export const getProductsForCart = (data) => {
   return axiosProcessor({
     method: "get",
@@ -61,7 +75,7 @@ export const getProductsForCart = (data) => {
   });
 };
 
-// categories
+// get categories
 export const getCategories = (_id) => {
   return axiosProcessor({
     method: "get",
@@ -69,7 +83,7 @@ export const getCategories = (_id) => {
   });
 };
 
-// user
+// user login
 export const userLogin = (data) => {
   return axiosProcessor({
     method: "post",
@@ -78,10 +92,59 @@ export const userLogin = (data) => {
   });
 };
 
+// get user
 export const getUser = () => {
   return axiosProcessor({
     method: "get",
     url: userAPI,
+    isPrivate: true,
+  });
+};
+
+//post cart
+export const postACart = (data) => {
+  return axiosProcessor({
+    method: "post",
+    url: cartAPI,
+    data,
+    isPrivate: true,
+  });
+};
+
+//get all cart for logged user
+export const getUserCart = () => {
+  return axiosProcessor({
+    method: "get",
+    url: cartAPI,
+    isPrivate: true,
+  });
+};
+
+//get a cart
+export const getACart = (productId, size) => {
+  return axiosProcessor({
+    method: "get",
+    url: cartAPI + "/" + productId + "&" + size,
+    isPrivate: true,
+  });
+};
+
+// update cart
+export const updateCart = (data) => {
+  return axiosProcessor({
+    method: "patch",
+    url: cartAPI,
+    data,
+    isPrivate: true,
+  });
+};
+
+// delete cart
+export const deleteCart = (data) => {
+  return axiosProcessor({
+    method: "delete",
+    url: cartAPI,
+    data,
     isPrivate: true,
   });
 };

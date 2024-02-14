@@ -4,7 +4,7 @@ const initialState = {
   products: [],
   latestArrivals: [],
   selectedProduct: {},
-  cartItems: [],
+  // cartItems: [],
 };
 
 const productSlice = createSlice({
@@ -20,9 +20,9 @@ const productSlice = createSlice({
     setSelectedProduct: (state, { payload }) => {
       state.selectedProduct = payload;
     },
-    setCartItems: (state, { payload = [] }) => {
-      state.cartItems = [...payload];
-    },
+    // setCartItems: (state, { payload = [] }) => {
+    //   state.cartItems = [...payload];
+    // },
   },
 });
 
@@ -32,6 +32,6 @@ export const {
   setProducts,
   setLatestArrivals,
   setSelectedProduct,
-  setCartItems,
+  // setCartItems,
 } = actions;
 export default reducer;
