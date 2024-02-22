@@ -18,11 +18,6 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/products" element={<Products />} />
         <Route path="/products/:slug" element={<ProductLanding />} />
-        {/* need to change the path of the following, vvi */}
-        {/* <Route
-          path="/products/cart-items/:slug&:size"
-          element={<CartPopover />}
-        /> */}
         <Route path="/cart" element={<Cart />} />
 
         {/* below this point are all private routes */}
@@ -34,15 +29,6 @@ function App() {
             </PrivateRoute>
           }
         />
-
-        {/* <Route
-          path="/cart/:productId&:size"
-          element={
-            <PrivateRoute>
-              <Dashboard />
-            </PrivateRoute>
-          }
-        /> */}
 
         <Route
           path="/checkout"

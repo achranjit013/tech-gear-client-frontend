@@ -57,16 +57,35 @@ export const postCartItemFromLocal = () => async (dispatch) => {
     : [];
 
   localStorageItems?.map(async (obj) => {
+    // Store the object (in local storage) in the database
     const { status } = await postACart(obj);
 
     if (status === "success") {
+      // After a successful storage, remove the object from local storage
+      removeStoredObject(obj);
       dispatch(getAllCartItemsAction());
     }
   });
+};
 
-  // to do.. 1st check if all success then only remove
-  // VVI
-  localStorage.removeItem("cartItems");
+// function to remove the object from local storage after storing that object in databse successfully
+export const removeStoredObject = (obj) => {
+  // Retrieve the array of objects from local storage
+  const localStorageItemsString = localStorage.getItem("cartItems");
+  const localStorageItems = localStorageItemsString
+    ? JSON.parse(localStorageItemsString)
+    : [];
+
+  // Find the index of the object in the array
+  const index = localStorageItems.findIndex(
+    (item) => item._id === obj._id && item.size === obj.size
+  );
+
+  // Remove the object from the array
+  localStorageItems.splice(index, 1);
+
+  // Update the local storage with the modified array
+  localStorage.setItem("cartItems", JSON.stringify(localStorageItems));
 };
 
 export const storeCartInLocalAction = (obj) => (dispatch) => {
