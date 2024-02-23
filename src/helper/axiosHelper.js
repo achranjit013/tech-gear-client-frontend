@@ -5,6 +5,7 @@ const productAPI = rootAPI + "/products";
 const categoryAPI = rootAPI + "/categories";
 const cartAPI = rootAPI + "/cart";
 const userAPI = rootAPI + "/users";
+const stripeAPI = rootAPI + "/payments";
 
 const getAccessJWT = () => {
   return sessionStorage.getItem("accessJWT");
@@ -29,6 +30,7 @@ const axiosProcessor = async ({
       Authorization: isPrivate ? token : null,
     };
 
+    console.log(method, url, data, headers);
     const response = await axios({
       method,
       url,
@@ -156,5 +158,15 @@ export const getNewAccessJWT = () => {
     url: userAPI + "/get-accessjwt",
     isPrivate: true,
     refreshToken: true,
+  });
+};
+
+// fetch payment intent
+export const fetchPaymentIntent = (data) => {
+  return axiosProcessor({
+    method: "post",
+    url: stripeAPI + "/create-payment-intent",
+    isPrivate: true,
+    data,
   });
 };
