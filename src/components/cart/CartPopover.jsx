@@ -78,7 +78,7 @@ const CartPopover = () => {
             onMouseEnter={() => setIsShowing(true)}
             onMouseLeave={() => setIsShowing(false)}
           >
-            <Popover.Panel className="absolute right-0 z-10 w-screen max-w-52 xxs:max-w-80 xs:max-w-md sm:max-w-lg transform max-h-[36rem] overflow-y-scroll">
+            <Popover.Panel className="absolute right-0 z-10 w-screen max-w-52 xxs:max-w-80 xs:max-w-md sm:max-w-lg transform max-h-[36rem] overflow-y-scroll pt-6 rounded-md">
               <CartItems cartPopover={true} />
             </Popover.Panel>
           </Transition>

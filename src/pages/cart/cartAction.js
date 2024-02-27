@@ -30,7 +30,6 @@ export const postNewCartItemAction = (items) => async (dispatch) => {
   const { userId, ...rest } = items;
   if (userId) {
     // for logged in user
-    console.log(rest);
     const pending = postACart(rest);
 
     toast.promise(pending, {
@@ -50,7 +49,6 @@ export const postNewCartItemAction = (items) => async (dispatch) => {
 };
 
 export const postCartItemFromLocal = () => async (dispatch) => {
-  console.log("i am in post from local");
   const localStorageItemsString = localStorage.getItem("cartItems");
   const localStorageItems = localStorageItemsString
     ? JSON.parse(localStorageItemsString)
@@ -126,15 +124,10 @@ export const storeCartInLocalAction = (obj) => (dispatch) => {
 };
 
 export const updateCartItemAction = (items) => async (dispatch) => {
-  console.log(items);
   const { userId, ...rest } = items;
   if (userId) {
-    // for logged in user
-    const { _id, qty } = rest;
-    const { status, message } = await updateCart({
-      _id,
-      qty,
-    });
+    const { productId, size, slug, ...obj } = rest;
+    const { status, message } = await updateCart(obj);
 
     if (status === "success") {
       dispatch(getAllCartItemsAction());
@@ -149,7 +142,6 @@ export const updateCartItemAction = (items) => async (dispatch) => {
 };
 
 export const updateCartInLocalAction = (obj) => (dispatch) => {
-  console.log(obj);
   // Retrieve the cart items from local storage
   const localStorageItemsString = localStorage.getItem("cartItems");
   const localStorageItems = JSON.parse(localStorageItemsString);
@@ -173,7 +165,6 @@ export const updateCartInLocalAction = (obj) => (dispatch) => {
 };
 
 export const deleteCartItemAction = (items) => async (dispatch) => {
-  console.log(items);
   const { userId, ...rest } = items;
   if (userId) {
     // for logged in user
@@ -192,11 +183,9 @@ export const deleteCartItemAction = (items) => async (dispatch) => {
 };
 
 export const deleteCartInLocalAction = (obj) => (dispatch) => {
-  console.log(obj);
   // Retrieve the cart items from local storage
   const localStorageItemsString = localStorage.getItem("cartItems");
   const localStorageItems = JSON.parse(localStorageItemsString);
-  console.log(localStorageItems);
   // Find the index of the item in the existing array in local storage
   const existingItemIndex = localStorageItems.findIndex(
     (currentItem) =>
@@ -204,14 +193,11 @@ export const deleteCartInLocalAction = (obj) => (dispatch) => {
       currentItem.size === obj.selectedSize
   );
 
-  console.log(existingItemIndex);
-
   if (existingItemIndex !== -1) {
     // take out the current item from localStorageItems
     localStorageItems.splice(existingItemIndex, 1);
   }
 
-  console.log(localStorageItems);
   // Save the updated array back into local storage
   localStorage.setItem("cartItems", JSON.stringify(localStorageItems));
 

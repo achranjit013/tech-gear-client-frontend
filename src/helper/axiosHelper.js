@@ -6,6 +6,7 @@ const categoryAPI = rootAPI + "/categories";
 const cartAPI = rootAPI + "/cart";
 const userAPI = rootAPI + "/users";
 const stripeAPI = rootAPI + "/payments";
+const orderAPI = rootAPI + "/orders";
 
 const getAccessJWT = () => {
   return sessionStorage.getItem("accessJWT");
@@ -30,7 +31,6 @@ const axiosProcessor = async ({
       Authorization: isPrivate ? token : null,
     };
 
-    console.log(method, url, data, headers);
     const response = await axios({
       method,
       url,
@@ -74,6 +74,16 @@ export const getProductsForCart = (data) => {
   return axiosProcessor({
     method: "get",
     url: productAPI + "/cart-item/" + data.slug + "&" + data.size,
+  });
+};
+
+// update product quantity after payment success
+export const updateProductsQty = (data) => {
+  return axiosProcessor({
+    method: "patch",
+    url: productAPI,
+    data,
+    isPrivate: true,
   });
 };
 
@@ -168,5 +178,24 @@ export const fetchPaymentIntent = (data) => {
     url: stripeAPI + "/create-payment-intent",
     isPrivate: true,
     data,
+  });
+};
+
+// post a order
+export const postAOrder = (data) => {
+  return axiosProcessor({
+    method: "post",
+    url: orderAPI,
+    isPrivate: true,
+    data,
+  });
+};
+
+// get orders for logged user
+export const getOrders = () => {
+  return axiosProcessor({
+    method: "get",
+    url: orderAPI,
+    isPrivate: true,
   });
 };

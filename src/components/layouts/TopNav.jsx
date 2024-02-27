@@ -4,7 +4,6 @@ import { Link } from "react-router-dom";
 
 const TopNav = () => {
   const { user } = useSelector((state) => state.userInfo);
-  console.log(user);
 
   return (
     <nav
