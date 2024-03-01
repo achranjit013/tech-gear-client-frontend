@@ -7,6 +7,7 @@ const cartAPI = rootAPI + "/cart";
 const userAPI = rootAPI + "/users";
 const stripeAPI = rootAPI + "/payments";
 const orderAPI = rootAPI + "/orders";
+const reviewAPI = rootAPI + "/reviews";
 
 const getAccessJWT = () => {
   return sessionStorage.getItem("accessJWT");
@@ -40,7 +41,7 @@ const axiosProcessor = async ({
 
     return response.data;
   } catch (error) {
-    if (error.response?.data?.message.includes("jwt expired")) {
+    if (error.response?.data?.message?.includes("jwt expired")) {
       const { accessJWT } = await getNewAccessJWT();
 
       if (accessJWT) {
@@ -192,10 +193,51 @@ export const postAOrder = (data) => {
 };
 
 // get orders for logged user
-export const getOrders = () => {
+export const getOrders = (obj) => {
+  const { date, limit, skip, text } = obj;
+
+  const conditionMatches = date && limit && skip >= 0;
+  const onlyC2C3Matches = !date && limit && skip >= 0;
+  const onlyC1Matches = date && !limit && !skip;
+
+  const result = conditionMatches
+    ? orderAPI +
+      "/?date=" +
+      date +
+      "&limit=" +
+      limit +
+      "&skip=" +
+      skip +
+      "&text=" +
+      text
+    : onlyC2C3Matches
+    ? orderAPI + "/?limit=" + limit + "&skip=" + skip + "&text=" + text
+    : onlyC1Matches
+    ? orderAPI + "/?date=" + date + "&text=" + text
+    : orderAPI + "/?text=" + text;
+
   return axiosProcessor({
     method: "get",
-    url: orderAPI,
+    url: result,
+    isPrivate: true,
+  });
+};
+
+// post a review
+export const postAReview = (data) => {
+  return axiosProcessor({
+    method: data?._id ? "put" : "post",
+    url: reviewAPI,
+    isPrivate: true,
+    data,
+  });
+};
+
+// get reviews
+export const getReviews = () => {
+  return axiosProcessor({
+    method: "get",
+    url: reviewAPI,
     isPrivate: true,
   });
 };

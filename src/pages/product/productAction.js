@@ -16,15 +16,3 @@ export const getSelectedProductAction = (slug) => async (dispatch) => {
     dispatch(setSelectedProduct(findResult));
   }
 };
-
-// export const updateProductQtyAction = (slug, size) => async (dispatch) => {
-//   const { status, findResult } = await updateProductsQty(slug, size);
-
-//   if (status === "success") {
-//     dispatch(setSelectedProduct(findResult));
-//   }
-// };
-
-// export const setCartItemsAction = (items) => (dispatch) => {
-//   dispatch(setCartItems(items));
-// };

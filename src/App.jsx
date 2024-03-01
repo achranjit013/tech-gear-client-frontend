@@ -5,10 +5,11 @@ import ProductLanding from "./pages/product/ProductLanding";
 import Login from "./pages/user/Login";
 import { ToastContainer } from "react-toastify";
 import Cart from "./pages/cart/Cart";
-import CartPopover from "./components/cart/CartPopover";
 import Checkout from "./pages/checkout/Checkout";
 import PrivateRoute from "./components/privateRoute/PrivateRoute";
 import Dashboard from "./pages/dashboard/Dashboard";
+import ContactDetails from "./pages/profile/ContactDetails";
+import OrderHistory from "./pages/orderHistory/OrderHistory";
 
 function App() {
   return (
@@ -21,6 +22,16 @@ function App() {
         <Route path="/cart" element={<Cart />} />
 
         {/* below this point are all private routes */}
+
+        <Route
+          path="/checkout"
+          element={
+            <PrivateRoute>
+              <Checkout />
+            </PrivateRoute>
+          }
+        />
+
         <Route
           path="/dashboard"
           element={
@@ -31,10 +42,19 @@ function App() {
         />
 
         <Route
-          path="/checkout"
+          path="/contact-details"
           element={
             <PrivateRoute>
-              <Checkout />
+              <ContactDetails />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/order-history"
+          element={
+            <PrivateRoute>
+              <OrderHistory />
             </PrivateRoute>
           }
         />

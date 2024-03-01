@@ -91,7 +91,9 @@ export default function CheckoutForm({
       const carts = filteredCartItems?.map(
         ({
           cartId,
+          productId,
           name,
+          slug,
           selectedQty,
           selectedSize,
           totalPrice,
@@ -99,7 +101,9 @@ export default function CheckoutForm({
         }) => {
           return {
             cartId,
+            productId,
             productName: name,
+            productSlug: slug,
             orderedQty: selectedQty.toString(),
             orderedSize: selectedSize,
             totalPrice,

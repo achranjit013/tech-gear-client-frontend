@@ -4,7 +4,6 @@ const initialState = {
   products: [],
   latestArrivals: [],
   selectedProduct: {},
-  // cartItems: [],
 };
 
 const productSlice = createSlice({
@@ -20,18 +19,10 @@ const productSlice = createSlice({
     setSelectedProduct: (state, { payload }) => {
       state.selectedProduct = payload;
     },
-    // setCartItems: (state, { payload = [] }) => {
-    //   state.cartItems = [...payload];
-    // },
   },
 });
 
 const { reducer, actions } = productSlice;
 
-export const {
-  setProducts,
-  setLatestArrivals,
-  setSelectedProduct,
-  // setCartItems,
-} = actions;
+export const { setProducts, setLatestArrivals, setSelectedProduct } = actions;
 export default reducer;
