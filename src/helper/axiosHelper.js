@@ -233,11 +233,23 @@ export const postAReview = (data) => {
   });
 };
 
-// get reviews
-export const getReviews = () => {
+// get reviews for logged user
+export const getReviews = (obj) => {
   return axiosProcessor({
     method: "get",
-    url: reviewAPI,
-    isPrivate: true,
+    url: obj?.userId
+      ? reviewAPI + "/user" + obj.userId
+      : obj?.productId
+      ? reviewAPI + "/product" + obj.productId
+      : reviewAPI,
+    // isPrivate: true,
   });
 };
+
+// get all reviews
+// export const getAllReviews = () => {
+//   return axiosProcessor({
+//     method: "get",
+//     url: reviewAPI,
+//   });
+// };

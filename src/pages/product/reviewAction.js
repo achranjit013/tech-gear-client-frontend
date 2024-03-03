@@ -3,8 +3,8 @@ import { getReviews, postAReview } from "../../helper/axiosHelper";
 import { setShowModal } from "../../components/modal/modalSlice";
 import { setReviews } from "./reviewSlice";
 
-export const getReviewAction = () => async (dispatch) => {
-  const { status, findResult } = await getReviews();
+export const getReviewAction = (obj) => async (dispatch) => {
+  const { status, findResult } = await getReviews(obj);
 
   if (status === "success") {
     dispatch(setReviews(findResult));
@@ -12,7 +12,8 @@ export const getReviewAction = () => async (dispatch) => {
 };
 
 export const postNewReviewAction = (reviewObj) => async (dispatch) => {
-  const pending = postAReview(reviewObj);
+  const { userId, ...rest } = reviewObj;
+  const pending = postAReview(rest);
   toast.promise(pending, {
     pending: "Please wait...",
   });
@@ -21,7 +22,7 @@ export const postNewReviewAction = (reviewObj) => async (dispatch) => {
   toast[status](message);
 
   if (status === "success") {
-    dispatch(getReviewAction());
+    dispatch(getReviewAction({ userId }));
     dispatch(setShowModal(false));
   }
 };

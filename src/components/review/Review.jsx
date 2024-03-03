@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import CustomInputs from "../customInputs/CustomInputs";
 import { postNewReviewAction } from "../../pages/product/reviewAction";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -9,6 +9,8 @@ function classNames(...classes) {
 
 const Review = ({ productId, productName, productSlug, review }) => {
   const dispatch = useDispatch();
+  const { user } = useSelector((state) => state.userInfo);
+
   const [form, setForm] = useState({ ratings: "5" });
 
   useEffect(() => {
@@ -47,13 +49,13 @@ const Review = ({ productId, productName, productSlug, review }) => {
       status: review?._id ? "inactive" : undefined,
     };
 
-    dispatch(postNewReviewAction(obj));
+    dispatch(postNewReviewAction({ userId: user?._id, ...obj }));
   };
 
   return (
     <form className="" onSubmit={handleOnSubmit}>
       <h2 className="mb-4 text-xl text-gray-800 font-semibold">
-        You are reviewing {productName}
+        Tell us your thoughts about {productName} !
       </h2>
 
       <CustomInputs
@@ -124,7 +126,7 @@ const Review = ({ productId, productName, productSlug, review }) => {
           "mt-10 flex w-full items-center justify-center rounded-md border border-transparent px-8 py-3 text-base font-medium text-gray-200 hover:text-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2"
         )}
       >
-        {review?._id ? "Update Review" : "Submit Review"}
+        {review?._id ? "Update Your Feedback" : "Submit Your Feedback"}
       </button>
     </form>
   );

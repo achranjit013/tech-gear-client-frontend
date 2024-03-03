@@ -8,8 +8,8 @@ import { getSelectedProductAction } from "./productAction";
 import { getSelectedProductCategoryAction } from "../category/categoryAction";
 import { postNewCartItemAction } from "../cart/cartAction";
 import { autoLogin } from "../user/userAction";
-
-const reviews = { href: "#", average: 4, totalCount: 117 };
+import { getReviewAction } from "./reviewAction";
+import { FaStarHalfStroke } from "react-icons/fa6";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -21,6 +21,7 @@ const ProductLanding = () => {
   const { user } = useSelector((state) => state.userInfo);
   const { selectedProduct } = useSelector((state) => state.productInfo);
   const { selectedCategory } = useSelector((state) => state.categoryInfo);
+  const { reviews } = useSelector((state) => state.reviewInfo);
 
   const [productThumbnail, setProductThumbnail] = useState("");
   const [selected, setSelected] = useState(null);
@@ -43,6 +44,7 @@ const ProductLanding = () => {
       dispatch(getSelectedProductCategoryAction(selectedProduct.parentCatId));
       setSelected(selectedProduct.variants[0]); //default variant
       setProductThumbnail(selectedProduct.thumbnail); //default thumbnail
+      dispatch(getReviewAction({ productId: selectedProduct?._id }));
     }
 
     dispatch(autoLogin());
@@ -86,6 +88,13 @@ const ProductLanding = () => {
       </svg>
     );
   }
+
+  const totalRatings = reviews.reduce(
+    (accumulator, { ratings }) => accumulator + ratings,
+    0
+  );
+
+  const averageRating = reviews.length > 0 ? totalRatings / reviews.length : 0;
 
   return (
     <MainLayout>
@@ -152,7 +161,7 @@ const ProductLanding = () => {
             {/* Image gallery */}
             <div className="flex justify-evenly md:justify-start md:flex-col md:gap-4">
               {/* thumbnail */}
-              <div className="h-[28rem] w-3/4 md:w-full relative rounded overflow-hidden">
+              <div className="w-3/4 md:w-full relative rounded overflow-hidden">
                 <img
                   src={`http://localhost:8000` + productThumbnail}
                   alt={`${selectedProduct?.name}-image-thumbnail`}
@@ -243,26 +252,61 @@ const ProductLanding = () => {
                 {/* Reviews */}
                 <div className="mt-6">
                   <div className="flex items-center">
-                    <div className="flex items-center">
-                      {[0, 1, 2, 3, 4].map((rating) => (
-                        <StarIcon
-                          key={rating}
-                          className={classNames(
-                            reviews.average > rating
-                              ? "text-gray-900"
-                              : "text-gray-200",
-                            "h-5 w-5 flex-shrink-0"
+                    {averageRating > 0 && (
+                      <>
+                        <div
+                          className="flex items-center justify-center mr-3"
+                          id="ratings"
+                        >
+                          {Array(Math.floor(averageRating))
+                            .fill("")
+                            .map((str, i) => (
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 24 24"
+                                fill="currentColor"
+                                className="text-warning w-5 h-5"
+                                key={i}
+                              >
+                                <path
+                                  fillRule="evenodd"
+                                  d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.006 5.404.434c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.434 2.082-5.005Z"
+                                  clipRule="evenodd"
+                                />
+                              </svg>
+                            ))}
+                          {averageRating - Math.floor(averageRating) > 0 && (
+                            <FaStarHalfStroke className="text-warning w-5 h-5" />
                           )}
-                          aria-hidden="true"
-                        />
-                      ))}
-                    </div>
-                    <a
-                      href={reviews.href}
-                      className="ml-3 text-sm font-medium text-indigo-600 hover:text-indigo-500"
+                          {Array(5 - Math.ceil(averageRating))
+                            .fill("")
+                            .map((str, i) => (
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 24 24"
+                                fill="currentColor"
+                                className="w-5 h-5"
+                                key={i}
+                              >
+                                <path
+                                  fillRule="evenodd"
+                                  d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.006 5.404.434c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.434 2.082-5.005Z"
+                                  clipRule="evenodd"
+                                />
+                              </svg>
+                            ))}
+
+                          <span className="ml-1">({averageRating})</span>
+                        </div>
+                      </>
+                    )}
+
+                    <Link
+                      to="#"
+                      className="text-sm font-medium text-gray-800 hover:text-gray-700 hover:underline cursor-pointer"
                     >
-                      {reviews.totalCount} reviews
-                    </a>
+                      {reviews.length} reviews
+                    </Link>
                   </div>
                 </div>
 
@@ -270,12 +314,12 @@ const ProductLanding = () => {
                   {/* Sizes */}
                   <div className="mt-10">
                     <div className="flex items-center justify-between">
-                      <h3 className="text-sm font-medium text-gray-900">
+                      <h3 className="text-sm font-medium text-gray-800">
                         Size
                       </h3>
                       <a
                         href="#"
-                        className="text-sm font-medium text-indigo-600 hover:text-indigo-500"
+                        className="text-sm font-medium text-gray-800 hover:text-gray-700 hover:underline"
                       >
                         Size guide
                       </a>
@@ -296,10 +340,10 @@ const ProductLanding = () => {
                             className={({ active, checked }) =>
                               `${
                                 active
-                                  ? "ring-2 ring-white/60 ring-offset-2 ring-offset-sky-300"
+                                  ? "ring-2 ring-white/60 ring-offset-2 ring-offset-gray-500"
                                   : ""
                               }
-                  ${checked ? "bg-sky-900/75 text-white" : "bg-white"}
+                  ${checked ? "bg-gray-800 text-gray-100" : "bg-gray-100"}
                     relative flex cursor-pointer rounded-lg px-5 py-4 shadow-md focus:outline-none`
                             }
                           >
@@ -312,8 +356,8 @@ const ProductLanding = () => {
                                         as="p"
                                         className={`font-medium uppercase ${
                                           checked
-                                            ? "text-white"
-                                            : "text-gray-900"
+                                            ? "text-gray-100"
+                                            : "text-gray-800"
                                         }`}
                                       >
                                         {plan.size}
@@ -321,7 +365,7 @@ const ProductLanding = () => {
                                     </div>
                                   </div>
                                   {checked && (
-                                    <div className="shrink-0 text-white">
+                                    <div className="shrink-0 text-gray-100">
                                       <CheckIcon className="h-6 w-6" />
                                     </div>
                                   )}
@@ -339,11 +383,11 @@ const ProductLanding = () => {
                     <Listbox value={checked} onChange={setChecked}>
                       {({ open }) => (
                         <>
-                          <Listbox.Label className="block text-sm font-medium leading-6 text-gray-900">
+                          <Listbox.Label className="block text-sm font-medium leading-6 text-gray-800">
                             Quantity
                           </Listbox.Label>
                           <div className="relative mt-2">
-                            <Listbox.Button className="relative w-full cursor-default rounded-md bg-white py-1.5 pl-3 pr-10 text-left text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 sm:text-sm sm:leading-6">
+                            <Listbox.Button className="relative w-full cursor-default rounded-md bg-white py-1.5 pl-3 pr-10 text-left text-gray-800 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-800 sm:text-sm sm:leading-6">
                               <span className="flex items-center">
                                 <span className="ml-3 block truncate">
                                   {checked}
@@ -372,8 +416,8 @@ const ProductLanding = () => {
                                       className={({ active }) =>
                                         classNames(
                                           active
-                                            ? "bg-indigo-600 text-white"
-                                            : "text-gray-900",
+                                            ? "bg-gray-800 text-gray-100"
+                                            : "text-gray-800",
                                           "relative cursor-default select-none py-2 pl-3 pr-9"
                                         )
                                       }
@@ -398,8 +442,8 @@ const ProductLanding = () => {
                                             <span
                                               className={classNames(
                                                 active
-                                                  ? "text-white"
-                                                  : "text-indigo-600",
+                                                  ? "text-gray-100"
+                                                  : "text-gray-800",
                                                 "absolute inset-y-0 right-0 flex items-center pr-4"
                                               )}
                                             >
@@ -425,7 +469,7 @@ const ProductLanding = () => {
                   {/* Description and details */}
                   <div className="">
                     <div className="mt-10">
-                      <h2 className="text-sm font-medium text-gray-900">
+                      <h2 className="text-sm font-medium text-gray-800">
                         Description
                       </h2>
 
@@ -435,43 +479,12 @@ const ProductLanding = () => {
                         </p>
                       </div>
                     </div>
-
-                    {/* <div className="mt-10">
-                      <h2 className="text-sm font-medium text-gray-900">
-                        Highlights
-                      </h2>
-
-                      <div className="mt-4">
-                        <ul
-                          role="list"
-                          className="list-disc space-y-2 pl-4 text-sm"
-                        >
-                          {product.highlights.map((highlight) => (
-                            <li key={highlight} className="text-gray-400">
-                              <span className="text-gray-600">{highlight}</span>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    </div>
-
-                    <div className="mt-10">
-                      <h2 className="text-sm font-medium text-gray-900">
-                        Details
-                      </h2>
-
-                      <div className="mt-4 space-y-6">
-                        <p className="text-sm text-gray-600">
-                          {product.details}
-                        </p>
-                      </div>
-                    </div> */}
                   </div>
 
                   {/* add to cart btn */}
                   <button
                     type="submit"
-                    className="mt-10 flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 px-8 py-3 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                    className="mt-10 flex w-full items-center justify-center rounded-md border border-transparent bg-gray-800 px-8 py-3 text-base font-medium text-gray-100 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-800 focus:ring-offset-2"
                   >
                     Add to bag
                   </button>

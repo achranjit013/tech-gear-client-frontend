@@ -113,7 +113,7 @@ const OrderHistory = () => {
         })
       );
 
-      dispatch(getReviewAction());
+      dispatch(getReviewAction({ userId: user._id }));
     }
   }, [user?._id, activeSelection, activePage, filterText, showModal]);
 
@@ -172,7 +172,8 @@ const OrderHistory = () => {
             });
           }}
         >
-          Write A Review
+          {/* Write a Review */}
+          Share Your Feedback
         </button>
       );
     }
@@ -202,7 +203,9 @@ const OrderHistory = () => {
                   viewBox="0 0 24 24"
                   fill="currentColor"
                   className={classNames(
-                    review?.ratings > i ? "text-warning" : "",
+                    review?.ratings > i
+                      ? "text-warning"
+                      : "text-gray-400 group-hover:text-gray-200",
                     "w-4 h-4"
                   )}
                   key={i}
@@ -228,7 +231,7 @@ const OrderHistory = () => {
               });
             }}
           >
-            Update Review
+            Update Your Feedback
           </button>
         </div>
       );
@@ -240,7 +243,7 @@ const OrderHistory = () => {
   return (
     <MainLayout>
       {showModal && (
-        <CustomModal title="Feedback form!">
+        <CustomModal title="Product Feedback form!">
           <Review {...reviewProduct} />
         </CustomModal>
       )}
@@ -363,7 +366,7 @@ const OrderHistory = () => {
                         <tr
                           className={classNames(
                             index % 2 === 0 ? "bg-gray-100" : "bg-gray-300",
-                            "hover:bg-gray-400 hover:text-gray-800"
+                            "group hover:bg-gray-400 hover:text-gray-800"
                           )}
                           key={index}
                         >
@@ -386,7 +389,7 @@ const OrderHistory = () => {
                                 i
                               ) => (
                                 <div className="flex gap-2 py-2" key={i}>
-                                  <div className="flex flex-col gap-2 w-32">
+                                  <div className="flex flex-col gap-2 w-40">
                                     <img
                                       src={`http://localhost:8000` + thumbnail}
                                       alt={productName}
@@ -397,19 +400,6 @@ const OrderHistory = () => {
                                       productName,
                                       productSlug
                                     )}
-                                    {/* <button
-                                      type="button"
-                                      className="uppercase font-medium bg-yellow-500 text-gray-800 hover:bg-yellow-600 rounded flex items-center justify-center"
-                                      onClick={() => {
-                                        handleOnReview({
-                                          productId,
-                                          productName,
-                                          productSlug,
-                                        });
-                                      }}
-                                    >
-                                      review
-                                    </button> */}
                                   </div>
                                   <div>
                                     Product: {productName}
