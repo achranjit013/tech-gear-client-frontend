@@ -1,11 +1,18 @@
 import React, { useEffect, useState, Fragment } from "react";
-import { StarIcon, ChevronUpDownIcon } from "@heroicons/react/20/solid";
+import { ChevronUpDownIcon } from "@heroicons/react/20/solid";
 import { RadioGroup, Listbox, Transition } from "@headlessui/react";
 import MainLayout from "../../components/layouts/MainLayout";
 import { Link, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { getSelectedProductAction } from "./productAction";
-import { getSelectedProductCategoryAction } from "../category/categoryAction";
+import {
+  getAllFavouriteItemsAction,
+  getSelectedProductAction,
+  postNewFavouriteItemAction,
+} from "./productAction";
+import {
+  getSelectedProductCategoryAction,
+  getSelectedProductSubCategoryAction,
+} from "../category/categoryAction";
 import { postNewCartItemAction } from "../cart/cartAction";
 import { autoLogin } from "../user/userAction";
 import { getReviewAction } from "./reviewAction";
@@ -20,7 +27,9 @@ const ProductLanding = () => {
   const { slug } = useParams();
   const { user } = useSelector((state) => state.userInfo);
   const { selectedProduct } = useSelector((state) => state.productInfo);
+  const { favouriteProducts } = useSelector((state) => state.productInfo);
   const { selectedCategory } = useSelector((state) => state.categoryInfo);
+  const { selectedSubCategory } = useSelector((state) => state.subCategoryInfo);
   const { reviews } = useSelector((state) => state.reviewInfo);
 
   const [productThumbnail, setProductThumbnail] = useState("");
@@ -41,10 +50,13 @@ const ProductLanding = () => {
     fetchData(); // Invoke the fetch function
 
     if (selectedProduct?._id) {
-      dispatch(getSelectedProductCategoryAction(selectedProduct.parentCatId));
+      dispatch(getSelectedProductCategoryAction(selectedProduct.categoryId));
+      dispatch(
+        getSelectedProductSubCategoryAction(selectedProduct.subCategoryId)
+      );
       setSelected(selectedProduct.variants[0]); //default variant
       setProductThumbnail(selectedProduct.thumbnail); //default thumbnail
-      dispatch(getReviewAction({ productId: selectedProduct?._id }));
+      dispatch(getReviewAction({ productId: selectedProduct._id }));
     }
 
     dispatch(autoLogin());
@@ -59,7 +71,7 @@ const ProductLanding = () => {
     setChecked(1);
   };
 
-  const handleOnCartBtnSubmit = async (e) => {
+  const handleOnCartBtnSubmit = (e) => {
     e.preventDefault();
 
     const obj = {
@@ -72,6 +84,16 @@ const ProductLanding = () => {
     };
 
     dispatch(postNewCartItemAction(obj));
+  };
+
+  const handleOnAddFavouriteBtn = (favourite) => {
+    const obj = {
+      userId: user?._id,
+      productId: selectedProduct?._id,
+      favourite,
+    };
+
+    dispatch(postNewFavouriteItemAction(obj));
   };
 
   function CheckIcon(props) {
@@ -98,16 +120,17 @@ const ProductLanding = () => {
 
   return (
     <MainLayout>
-      <div className="bg-white">
+      <div className="bg-gray-50 flex justify-center">
         <div className="py-6 px-6 lg:px-8">
           {/* breadcrumb */}
           <nav aria-label="Breadcrumb">
             <ol role="list" className="mx-auto flex items-center space-x-2">
+              {/* home */}
               <li className="">
                 <div className="flex items-center">
                   <Link
                     to="/"
-                    className="mr-2 text-sm font-medium text-gray-900"
+                    className="mr-2 text-sm font-medium capitalize text-gray-700"
                   >
                     Home
                   </Link>
@@ -124,11 +147,12 @@ const ProductLanding = () => {
                 </div>
               </li>
 
+              {/* category */}
               <li className="">
                 <div className="flex items-center">
                   <Link
                     to={`/categories/` + selectedCategory?.slug}
-                    className="mr-2 text-sm font-medium text-gray-900"
+                    className="mr-2 text-sm font-medium capitalize text-gray-700"
                   >
                     {selectedCategory?.title}
                   </Link>
@@ -145,11 +169,34 @@ const ProductLanding = () => {
                 </div>
               </li>
 
+              {/* subcategory */}
+              <li className="">
+                <div className="flex items-center">
+                  <Link
+                    to={`/subcategories/` + selectedSubCategory?.slug}
+                    className="mr-2 text-sm font-medium capitalize text-gray-700"
+                  >
+                    {selectedSubCategory?.title}
+                  </Link>
+                  <svg
+                    width={16}
+                    height={20}
+                    viewBox="0 0 16 20"
+                    fill="currentColor"
+                    aria-hidden="true"
+                    className="h-5 w-4 text-gray-300"
+                  >
+                    <path d="M5.697 4.34L8.98 16.532h1.327L7.025 4.341H5.697z" />
+                  </svg>
+                </div>
+              </li>
+
+              {/* product */}
               <li className="text-sm">
                 <Link
                   to={`/products/` + selectedProduct?.slug}
                   aria-current="page"
-                  className="font-medium text-gray-500 hover:text-gray-600"
+                  className="font-medium capitalize text-gray-500 hover:text-gray-600"
                 >
                   {selectedProduct?.name}
                 </Link>
@@ -157,20 +204,37 @@ const ProductLanding = () => {
             </ol>
           </nav>
 
-          <div className="mt-6 md:grid md:max-w-7xl md:grid-cols-2 md:gap-x-4">
+          <div className="mt-6 lg:grid lg:max-w-7xl lg:grid-cols-2 lg:gap-x-8">
             {/* Image gallery */}
-            <div className="flex justify-evenly md:justify-start md:flex-col md:gap-4">
+            <div className="flex flex-col sm:flex-row justify-between gap-4">
               {/* thumbnail */}
-              <div className="w-3/4 md:w-full relative rounded overflow-hidden">
+              <div className="w-full h-[30rem] overflow-hidden border border-gray-700 rounded relative">
                 <img
-                  src={`http://localhost:8000` + productThumbnail}
+                  src={productThumbnail}
                   alt={`${selectedProduct?.name}-image-thumbnail`}
-                  className="w-full h-full object-fill object-center"
+                  className="absolute top-0 left-0 w-full h-full object-fit-cover p-1 rounded-lg overflow-hidden"
                 />
 
-                {/* add to favorite button */}
+                {/* add to favourite button */}
                 <div className="absolute flex flex-col top-0 right-0 p-1">
-                  <button className="transition ease-in duration-300 bg-gray-800  hover:text-gray-100 shadow hover:shadow-md text-gray-400 rounded-full w-8 h-8 text-center p-1">
+                  <button
+                    className={classNames(
+                      favouriteProducts.filter(
+                        ({ productId }) => productId === selectedProduct?._id
+                      ).length > 0
+                        ? "text-red-500 hover:text-red-400"
+                        : "text-gray-400 hover:text-gray-200",
+                      "transition ease-in duration-300 bg-gray-800 shadow rounded-full w-8 h-8 text-center p-1"
+                    )}
+                    // onClick={handleOnAddFavouriteBtn}
+                    onClick={() =>
+                      handleOnAddFavouriteBtn(
+                        favouriteProducts.filter(
+                          ({ productId }) => productId === selectedProduct?._id
+                        ).length > 0
+                      )
+                    }
+                  >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       className="h-6 w-6"
@@ -205,19 +269,21 @@ const ProductLanding = () => {
               </div>
 
               {/* other images */}
-              <div className="flex flex-col gap-y-4 md:flex-row md:flex-wrap md:gap-x-4 md:gap-y-0">
+              <div className="w-full sm:h-[30rem] sm:w-52 flex sm:flex-col overflow-y-hidden sm:overflow-y-scroll overflow-x-scroll sm:overflow-x-hidden border border-gray-700 rounded relative">
                 {selectedProduct?.images?.map((item, i) => (
                   <button
                     key={i}
                     className=""
                     onClick={() => setProductThumbnail(item)}
                   >
-                    <div className="h-[4.5rem] w-[4.5rem] rounded overflow-hidden">
-                      <img
-                        src={`http://localhost:8000` + item}
-                        alt={`${selectedProduct?.name}-image-${i}`}
-                        className="h-full w-full object-fill object-center"
-                      />
+                    <div className="px-1 py-0.5 h-full w-full">
+                      <div className="w-52 sm:w-full">
+                        <img
+                          src={item}
+                          alt={`${selectedProduct?.name}-image-${i}`}
+                          className="h-[8rem] w-full object-fill object-center border border-gray-700 rounded"
+                        />
+                      </div>
                     </div>
                   </button>
                 ))}
@@ -225,17 +291,17 @@ const ProductLanding = () => {
             </div>
 
             {/* Product info */}
-            <div className="max-w-2xl pt-6 md:pt-0">
+            <div className="max-w-2xl pt-6 lg:pt-0">
               {/* product name */}
               <div className="">
-                <h1 className="text-2xl font-bold tracking-tight uppercase text-gray-900 md:text-3xl">
+                <h1 className="text-2xl font-bold tracking-tight uppercase text-gray-700 md:text-3xl">
                   {selectedProduct.name}
                 </h1>
               </div>
 
               {/* price */}
               <div className="mt-4">
-                <p className="text-2xl tracking-tight text-gray-900">
+                <p className="text-2xl tracking-tight text-gray-700">
                   AU${" "}
                   {selected?.salesPrice ? (
                     <>
@@ -303,7 +369,7 @@ const ProductLanding = () => {
 
                     <Link
                       to="#"
-                      className="text-sm font-medium text-gray-800 hover:text-gray-700 hover:underline cursor-pointer"
+                      className="text-sm font-medium text-gray-700 hover:text-gray-600 hover:underline cursor-pointer"
                     >
                       {reviews.length} reviews
                     </Link>
@@ -314,12 +380,12 @@ const ProductLanding = () => {
                   {/* Sizes */}
                   <div className="mt-10">
                     <div className="flex items-center justify-between">
-                      <h3 className="text-sm font-medium text-gray-800">
+                      <h3 className="text-sm font-medium text-gray-700">
                         Size
                       </h3>
                       <a
                         href="#"
-                        className="text-sm font-medium text-gray-800 hover:text-gray-700 hover:underline"
+                        className="text-sm font-medium text-gray-700 hover:text-gray-600 hover:underline"
                       >
                         Size guide
                       </a>
@@ -343,7 +409,7 @@ const ProductLanding = () => {
                                   ? "ring-2 ring-white/60 ring-offset-2 ring-offset-gray-500"
                                   : ""
                               }
-                  ${checked ? "bg-gray-800 text-gray-100" : "bg-gray-100"}
+                  ${checked ? "bg-gray-700 text-gray-100" : "bg-gray-100"}
                     relative flex cursor-pointer rounded-lg px-5 py-4 shadow-md focus:outline-none`
                             }
                           >
@@ -357,7 +423,7 @@ const ProductLanding = () => {
                                         className={`font-medium uppercase ${
                                           checked
                                             ? "text-gray-100"
-                                            : "text-gray-800"
+                                            : "text-gray-700"
                                         }`}
                                       >
                                         {plan.size}
@@ -383,11 +449,11 @@ const ProductLanding = () => {
                     <Listbox value={checked} onChange={setChecked}>
                       {({ open }) => (
                         <>
-                          <Listbox.Label className="block text-sm font-medium leading-6 text-gray-800">
+                          <Listbox.Label className="block text-sm font-medium leading-6 text-gray-700">
                             Quantity
                           </Listbox.Label>
                           <div className="relative mt-2">
-                            <Listbox.Button className="relative w-full cursor-default rounded-md bg-white py-1.5 pl-3 pr-10 text-left text-gray-800 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-800 sm:text-sm sm:leading-6">
+                            <Listbox.Button className="relative w-full cursor-default rounded-md bg-white py-1.5 pl-3 pr-10 text-left text-gray-700 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-700 sm:text-sm sm:leading-6">
                               <span className="flex items-center">
                                 <span className="ml-3 block truncate">
                                   {checked}
@@ -416,8 +482,8 @@ const ProductLanding = () => {
                                       className={({ active }) =>
                                         classNames(
                                           active
-                                            ? "bg-gray-800 text-gray-100"
-                                            : "text-gray-800",
+                                            ? "bg-gray-700 text-gray-100"
+                                            : "text-gray-700",
                                           "relative cursor-default select-none py-2 pl-3 pr-9"
                                         )
                                       }
@@ -443,7 +509,7 @@ const ProductLanding = () => {
                                               className={classNames(
                                                 active
                                                   ? "text-gray-100"
-                                                  : "text-gray-800",
+                                                  : "text-gray-700",
                                                 "absolute inset-y-0 right-0 flex items-center pr-4"
                                               )}
                                             >
@@ -469,7 +535,7 @@ const ProductLanding = () => {
                   {/* Description and details */}
                   <div className="">
                     <div className="mt-10">
-                      <h2 className="text-sm font-medium text-gray-800">
+                      <h2 className="text-sm font-medium text-gray-700">
                         Description
                       </h2>
 
@@ -484,7 +550,7 @@ const ProductLanding = () => {
                   {/* add to cart btn */}
                   <button
                     type="submit"
-                    className="mt-10 flex w-full items-center justify-center rounded-md border border-transparent bg-gray-800 px-8 py-3 text-base font-medium text-gray-100 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-800 focus:ring-offset-2"
+                    className="mt-10 flex w-full items-center justify-center rounded-md border border-transparent bg-gray-700 px-8 py-3 text-base font-medium text-gray-100 hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-700 focus:ring-offset-2"
                   >
                     Add to bag
                   </button>

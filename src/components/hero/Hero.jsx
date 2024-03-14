@@ -1,39 +1,35 @@
-import zooHeroImg from "../../assets/zoo-bg-img.webp";
+import { Carousel } from "flowbite-react";
 
 const Hero = () => {
   return (
-    // <div className="bg-[url(/src/assets/zoo-bg-img.webp)] bg-no-repeat bg-cover bg-center py-56 mt-16 sm:py-48 lg:mt-28 lg:py-96">
-    // <div className="bg-[url(/src/assets/zoo-bg-img.webp)] bg-no-repeat bg-cover bg-center py-[6rem] xxs:py-[8rem] xs:py-[9rem] sm:py-[12rem] lg:py-[26.7rem]">
-    <div className="">
-      <img src={zooHeroImg} alt="zoo hero image" className="w-fit h-auto" />
-      {/* <div className="relative isolate px-6 pt-14 lg:px-8"> */}
-      {/* <div className="relative isolate">
-        <div
-          className="absolute inset-x-0 -top-40 -z-10 transform-gpu overflow-hidden blur-3xl sm:-top-80"
-          aria-hidden="true"
-        >
-          <div
-            className="relative left-[calc(50%-11rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 rotate-[30deg] bg-gradient-to-tr from-[#ff80b5] to-[#9089fc] opacity-30 sm:left-[calc(50%-30rem)] sm:w-[72.1875rem]"
-            style={{
-              clipPath:
-                "polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)",
-            }}
-          />
-        </div>
-
-        <div
-          className="absolute inset-x-0 top-[calc(100%-3rem)] -z-10 transform-gpu overflow-hidden blur-3xl sm:top-[calc(100%-30rem)]"
-          aria-hidden="true"
-        >
-          <div
-            className="relative left-[calc(50%+3rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 bg-gradient-to-tr from-[#ff80b5] to-[#9089fc] opacity-30 sm:left-[calc(50%+36rem)] sm:w-[72.1875rem]"
-            style={{
-              clipPath:
-                "polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)",
-            }}
-          />
-        </div>
-      </div> */}
+    <div className="h-56 sm:h-64 xl:h-80 2xl:h-96">
+      <Carousel>
+        <img
+          src="https://daisyui.com/images/stock/photo-1609621838510-5ad474b7d25d.jpg"
+          alt="..."
+          className="w-full h-full object-cover"
+        />
+        <img
+          src="https://daisyui.com/images/stock/photo-1625726411847-8cbb60cc71e6.jpg"
+          alt="..."
+          className="w-full h-full object-cover"
+        />
+        <img
+          src="https://daisyui.com/images/stock/photo-1414694762283-acccc27bca85.jpg"
+          alt="..."
+          className="w-full h-full object-cover"
+        />
+        <img
+          src="https://daisyui.com/images/stock/photo-1665553365602-b2fb8e5d1707.jpg"
+          alt="..."
+          className="w-full h-full object-cover"
+        />
+        <img
+          src="https://daisyui.com/images/stock/photo-1625726411847-8cbb60cc71e6.jpg"
+          alt="..."
+          className="w-full h-full object-cover"
+        />
+      </Carousel>
     </div>
   );
 };

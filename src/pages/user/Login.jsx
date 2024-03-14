@@ -1,12 +1,13 @@
 import React, { useEffect, useRef } from "react";
 import MainLayout from "../../components/layouts/MainLayout";
 import { useDispatch, useSelector } from "react-redux";
-import { useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { autoLogin, getUserInfoAction } from "./userAction";
 import { userLogin } from "../../helper/axiosHelper";
 import CustomInputs from "../../components/customInputs/CustomInputs";
 import { toast } from "react-toastify";
 import { postCartItemFromLocal } from "../cart/cartAction";
+import { postFavouriteItemFromLocal } from "../product/productAction";
 
 const Login = () => {
   const dispatch = useDispatch();
@@ -25,9 +26,15 @@ const Login = () => {
     if (user?._id) {
       // Retrieve the cart items from user's local storage
       const localStorageItemsString = localStorage.getItem("cartItems");
+      const localStorageFavouriteItemsString =
+        localStorage.getItem("favouriteItems");
 
-      // if the user has items in local storage, send them to store in cart table in db after login successful
+      // if the user has cart items in local storage, send them to store in cart table in db after login successful
       localStorageItemsString && dispatch(postCartItemFromLocal());
+
+      // if the user has favourite items in local storage, send them to store in favorite table in db after login successful
+      localStorageFavouriteItemsString &&
+        dispatch(postFavouriteItemFromLocal());
 
       // navigate the browser to the location or dashboard after login successful
       navigate(fromLocation);
@@ -88,13 +95,13 @@ const Login = () => {
     <MainLayout>
       <div className=" bg-gray-100 flex flex-col py-28 sm:px-6 lg:px-8">
         <div className="sm:mx-auto sm:w-full sm:max-w-md">
-          <h2 className="mt-6 text-center text-2xl font-bold text-gray-900">
+          <h2 className="mt-6 text-center text-2xl font-bold text-gray-700">
             Sign in to your account
           </h2>
         </div>
 
         <div className="mt-8 xxs:mx-auto xxs:w-full xxs:max-w-md">
-          <div className="bg-white py-8 px-4 shadow xxs:rounded-lg sm:px-10">
+          <div className="bg-gray-50 py-8 px-4 shadow xxs:rounded-lg sm:px-10">
             <form className="space-y-6" onSubmit={handleOnFormSubmit}>
               {customInput.map((item, i) => (
                 <CustomInputs key={i} {...item} />
@@ -106,11 +113,11 @@ const Login = () => {
                     id="remember_me"
                     name="remember_me"
                     type="checkbox"
-                    className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                    className="cursor-pointer h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
                   />
                   <label
                     htmlFor="remember_me"
-                    className="ml-2 block text-sm text-gray-900"
+                    className="cursor-pointer pl-1 block text-sm text-indigo-600"
                   >
                     Remember me
                   </label>
@@ -129,7 +136,7 @@ const Login = () => {
               <div>
                 <button
                   type="submit"
-                  className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                  className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-gray-700 hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-700"
                 >
                   Sign in
                 </button>
@@ -190,12 +197,12 @@ const Login = () => {
             <div className="mt-6">
               <p className=" text-center text-sm text-gray-500">
                 Not a member?{" "}
-                <a
-                  href="#"
+                <Link
+                  to="/create-account"
                   className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500"
                 >
                   Create account with us
-                </a>
+                </Link>
               </p>
             </div>
           </div>

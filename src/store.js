@@ -1,6 +1,7 @@
 import { configureStore } from "@reduxjs/toolkit";
 import productReducer from "./pages/product/productSlice";
 import categoryReducer from "./pages/category/categorySlice";
+import subCategoryReducer from "./pages/category/subCategorySlice";
 import cartReducer from "./pages/cart/cartSlice";
 import userReducer from "./pages/user/userSlice";
 import orderReducer from "./pages/orderHistory/orderSlice";
@@ -11,6 +12,7 @@ const store = configureStore({
   reducer: {
     productInfo: productReducer,
     categoryInfo: categoryReducer,
+    subCategoryInfo: subCategoryReducer,
     cartInfo: cartReducer,
     userInfo: userReducer,
     orderInfo: orderReducer,

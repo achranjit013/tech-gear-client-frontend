@@ -1,20 +1,11 @@
 import React, { useState } from "react";
 import { Popover, Transition } from "@headlessui/react";
 import { Fragment } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { getProducts } from "../../helper/axiosHelper";
-import { Link } from "react-router-dom";
-import { setCartItemsAction } from "../../pages/cart/cartAction";
+import { useSelector } from "react-redux";
 import CartItems from "./CartItems";
 
-function classNames(...classes) {
-  return classes.filter(Boolean).join(" ");
-}
-
 const CartPopover = () => {
-  // const dispatch = useDispatch();
   const { cartItems } = useSelector((state) => state.cartInfo);
-  // const [revisedCartItems, setRevisedCartItems] = useState([]);
   const [isShowing, setIsShowing] = useState(false); //to show cart window on mouse hover / enter
 
   return (
@@ -23,13 +14,13 @@ const CartPopover = () => {
         <>
           <Popover.Button
             type="button"
-            className="relative inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
+            className="relative inline-flex items-center p-1 w-9 h-9 justify-center text-sm bg-gray-700 hover:bg-gray-600 text-gray-400 hover:text-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-600 transition ease-in duration-300 shadow"
             onMouseEnter={() => setIsShowing(true)}
             onMouseLeave={() => setIsShowing(false)}
           >
-            <div className="top-0.5 absolute left-[1.38rem]">
+            <div className="top-[0.04rem] absolute left-[1.22rem]">
               {cartItems?.length > 0 && (
-                <p className="flex h-2 w-2 items-center justify-center rounded-full bg-red-500 p-2 text-xs text-white">
+                <p className="flex h-1 w-1 items-center justify-center rounded-full bg-red-500 p-2 text-xs text-gray-50">
                   {cartItems.reduce((accumulator, { qty }) => {
                     return accumulator + Number(qty);
                   }, 0)}
@@ -68,17 +59,17 @@ const CartPopover = () => {
           </Popover.Button>
           <Transition
             as={Fragment}
-            enter="transition ease-out duration-200"
+            enter="transition ease-out duration-300"
             enterFrom="opacity-0 translate-y-1"
             enterTo="opacity-100 translate-y-0"
-            leave="transition ease-in duration-150"
+            leave="transition ease-in duration-300"
             leaveFrom="opacity-100 translate-y-0"
             leaveTo="opacity-0 translate-y-1"
             show={isShowing}
             onMouseEnter={() => setIsShowing(true)}
             onMouseLeave={() => setIsShowing(false)}
           >
-            <Popover.Panel className="absolute right-0 z-10 w-screen max-w-52 xxs:max-w-80 xs:max-w-md sm:max-w-lg transform max-h-[36rem] overflow-y-scroll pt-6 rounded-md">
+            <Popover.Panel className="absolute right-0 z-10 w-screen max-w-52 xxs:max-w-80 xs:max-w-md sm:max-w-lg transform max-h-[36rem] overflow-y-scroll pt-6 rounded-md border border-gray-800 border-t-0 rounded-t-none">
               <CartItems cartPopover={true} />
             </Popover.Panel>
           </Transition>

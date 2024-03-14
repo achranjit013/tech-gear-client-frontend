@@ -60,6 +60,7 @@ const CartItems = ({ cartPopover, checkout }) => {
         });
 
         const results = await Promise.all(promises);
+
         const filteredResults = results.filter(Boolean); // Filter out any undefined values
 
         setRevisedCartItemss(filteredResults);
@@ -144,7 +145,7 @@ const CartItems = ({ cartPopover, checkout }) => {
                 <div className="flex flex-col xs:flex-row">
                   <div className="flex items-center">
                     <img
-                      src={`http://localhost:8000` + thumbnail}
+                      src={thumbnail}
                       alt="product-image"
                       className="w-full rounded-md xs:w-40 p-2 overflow-hidden"
                     />

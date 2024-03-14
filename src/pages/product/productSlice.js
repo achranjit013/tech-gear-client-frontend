@@ -2,8 +2,9 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   products: [],
-  latestArrivals: [],
+  featuredProducts: [],
   selectedProduct: {},
+  favouriteProducts: [],
 };
 
 const productSlice = createSlice({
@@ -13,16 +14,24 @@ const productSlice = createSlice({
     setProducts: (state, { payload = [] }) => {
       state.products = payload;
     },
-    setLatestArrivals: (state, { payload = [] }) => {
-      state.latestArrivals = payload;
+    setFeaturedProducts: (state, { payload = [] }) => {
+      state.featuredProducts = payload;
     },
     setSelectedProduct: (state, { payload }) => {
       state.selectedProduct = payload;
+    },
+    setFavouriteProducts: (state, { payload = [] }) => {
+      state.favouriteProducts = payload;
     },
   },
 });
 
 const { reducer, actions } = productSlice;
 
-export const { setProducts, setLatestArrivals, setSelectedProduct } = actions;
+export const {
+  setProducts,
+  setFeaturedProducts,
+  setSelectedProduct,
+  setFavouriteProducts,
+} = actions;
 export default reducer;

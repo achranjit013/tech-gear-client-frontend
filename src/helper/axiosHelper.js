@@ -3,7 +3,9 @@ import axios from "axios";
 const rootAPI = import.meta.env.VITE_SERVER_ROOT + "/api/v1";
 const productAPI = rootAPI + "/products";
 const categoryAPI = rootAPI + "/categories";
+const subCategoryAPI = rootAPI + "/subcategories";
 const cartAPI = rootAPI + "/cart";
+const favouriteAPI = rootAPI + "/favourites";
 const userAPI = rootAPI + "/users";
 const stripeAPI = rootAPI + "/payments";
 const orderAPI = rootAPI + "/orders";
@@ -70,6 +72,15 @@ export const getProducts = (slug, size) => {
   });
 };
 
+// get products
+export const getFavouriteProducts = (ids) => {
+  return axiosProcessor({
+    method: "get",
+    url: productAPI + "/?ids=" + ids,
+    isPrivate: true,
+  });
+};
+
 // get products for cart
 export const getProductsForCart = (data) => {
   return axiosProcessor({
@@ -96,6 +107,14 @@ export const getCategories = (_id) => {
   });
 };
 
+// get subcategories
+export const getSubCategories = (_id) => {
+  return axiosProcessor({
+    method: "get",
+    url: _id ? subCategoryAPI + "/" + _id : subCategoryAPI,
+  });
+};
+
 // user login
 export const userLogin = (data) => {
   return axiosProcessor({
@@ -110,6 +129,53 @@ export const getUser = () => {
   return axiosProcessor({
     method: "get",
     url: userAPI,
+    isPrivate: true,
+  });
+};
+
+// create new user
+export const postNewUser = (data) => {
+  return axiosProcessor({
+    method: "post",
+    url: userAPI,
+    data,
+  });
+};
+
+// verify email
+export const postVerifyEmail = (data) => {
+  return axiosProcessor({
+    method: "post",
+    url: userAPI + "/verify-email",
+    data,
+  });
+};
+
+//post favorite
+export const postAFavourite = (data) => {
+  return axiosProcessor({
+    method: "post",
+    url: favouriteAPI,
+    data,
+    isPrivate: true,
+  });
+};
+
+//get favorite
+export const fetchFavourites = () => {
+  return axiosProcessor({
+    method: "get",
+    url: favouriteAPI,
+    isPrivate: true,
+  });
+};
+
+//delete favorite
+export const deleteAFavourite = (data) => {
+  return axiosProcessor({
+    method: "delete",
+    url: favouriteAPI,
+    data,
     isPrivate: true,
   });
 };
@@ -245,11 +311,3 @@ export const getReviews = (obj) => {
     // isPrivate: true,
   });
 };
-
-// get all reviews
-// export const getAllReviews = () => {
-//   return axiosProcessor({
-//     method: "get",
-//     url: reviewAPI,
-//   });
-// };

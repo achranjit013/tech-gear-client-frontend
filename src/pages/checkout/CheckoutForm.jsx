@@ -121,6 +121,8 @@ export default function CheckoutForm({
         billingStreet: form.billingStreet,
         billingState: form.billingState,
         billingZip: form.billingZip,
+        billingSameAsShipping: true,
+        shipping: "standard",
         carts,
         amount: (Number(subTotal) + getPrice()).toFixed(2),
         paymentMethod: paymentIntent?.payment_method,

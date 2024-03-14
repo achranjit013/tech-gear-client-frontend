@@ -391,7 +391,7 @@ const OrderHistory = () => {
                                 <div className="flex gap-2 py-2" key={i}>
                                   <div className="flex flex-col gap-2 w-40">
                                     <img
-                                      src={`http://localhost:8000` + thumbnail}
+                                      src={thumbnail}
                                       alt={productName}
                                       className="w-full"
                                     />

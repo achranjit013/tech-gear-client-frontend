@@ -10,6 +10,9 @@ import PrivateRoute from "./components/privateRoute/PrivateRoute";
 import Dashboard from "./pages/dashboard/Dashboard";
 import ContactDetails from "./pages/profile/ContactDetails";
 import OrderHistory from "./pages/orderHistory/OrderHistory";
+import CreateAccount from "./pages/user/CreateAccount";
+import VerifyEmail from "./pages/user/VerifyEmail";
+import Favourite from "./pages/favourite/Favourite";
 
 function App() {
   return (
@@ -17,9 +20,12 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/verify-email" element={<VerifyEmail />} />
+        <Route path="/create-account" element={<CreateAccount />} />
         <Route path="/products" element={<Products />} />
         <Route path="/products/:slug" element={<ProductLanding />} />
         <Route path="/cart" element={<Cart />} />
+        <Route path="/favourites" element={<Favourite />} />
 
         {/* below this point are all private routes */}
 
