@@ -1,11 +1,33 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { setUser } from "../../pages/user/userSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { userLogout } from "../../helper/axiosHelper";
 
 const Sidebar = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { user } = useSelector((state) => state.userInfo);
+
+  const handleOnSignout = () => {
+    // log out from server by removing the access and refresh JWTs
+    userLogout(user?._id);
+
+    //clear storages
+    localStorage.removeItem("refreshJWT");
+    sessionStorage.removeItem("accessJWT");
+
+    // reset store
+    dispatch(setUser({}));
+
+    // Redirect to the home page
+    navigate("/");
+  };
+
   return (
     <aside
       id="default-sidebar"
-      className="border-y border-y-gray-50"
+      className="border-t border-t-gray-50"
       aria-label="Sidebar"
     >
       <div className="px-3 py-4 overflow-y-auto bg-gray-800">
@@ -13,10 +35,10 @@ const Sidebar = () => {
           <li>
             <Link
               to="/dashboard"
-              className="flex items-center p-2 rounded-lg text-white hover:bg-gray-700 group"
+              className="flex items-center p-2 rounded-lg text-gray-50 hover:bg-gray-700 group"
             >
               <svg
-                className="w-5 h-5 text-gray-400 transition duration-75 group-hover:text-white"
+                className="w-5 h-5 text-gray-400 transition duration-75 group-hover:text-gray-100"
                 aria-hidden="true"
                 xmlns="http://www.w3.org/2000/svg"
                 fill="currentColor"
@@ -31,10 +53,10 @@ const Sidebar = () => {
           <li>
             <Link
               to="/contact-details"
-              className="flex items-center p-2 rounded-lg text-white hover:bg-gray-700 group"
+              className="flex items-center p-2 rounded-lg text-gray-50 hover:bg-gray-700 group"
             >
               <svg
-                className="flex-shrink-0 w-5 h-5 text-gray-400 transition duration-75 group-hover:text-white"
+                className="flex-shrink-0 w-5 h-5 text-gray-400 transition duration-75 group-hover:text-gray-100"
                 aria-hidden="true"
                 xmlns="http://www.w3.org/2000/svg"
                 fill="currentColor"
@@ -50,10 +72,10 @@ const Sidebar = () => {
           <li>
             <Link
               to="/order-history"
-              className="flex items-center p-2 rounded-lg text-white hover:bg-gray-700 group"
+              className="flex items-center p-2 rounded-lg text-gray-50 hover:bg-gray-700 group"
             >
               <svg
-                className="flex-shrink-0 w-5 h-5 text-gray-400 transition duration-75 group-hover:text-white"
+                className="flex-shrink-0 w-5 h-5 text-gray-400 transition duration-75 group-hover:text-gray-100"
                 aria-hidden="true"
                 xmlns="http://www.w3.org/2000/svg"
                 fill="currentColor"
@@ -67,12 +89,12 @@ const Sidebar = () => {
             </Link>
           </li>
           <li>
-            <a
-              href="#"
-              className="flex items-center p-2 rounded-lg text-white hover:bg-gray-700 group"
+            <Link
+              to="#"
+              className="flex items-center p-2 rounded-lg text-gray-50 hover:bg-gray-700 group"
             >
               <svg
-                className="flex-shrink-0 w-5 h-5 text-gray-400 transition duration-75 group-hover:text-white"
+                className="flex-shrink-0 w-5 h-5 text-gray-400 transition duration-75 group-hover:text-gray-100"
                 aria-hidden="true"
                 xmlns="http://www.w3.org/2000/svg"
                 fill="currentColor"
@@ -83,15 +105,15 @@ const Sidebar = () => {
               <span className="flex-1 ms-3 whitespace-nowrap">
                 Change Password
               </span>
-            </a>
+            </Link>
           </li>
           <li>
-            <a
-              href="#"
-              className="flex items-center p-2 rounded-lg text-white hover:bg-gray-700 group"
+            <button
+              className="flex items-center p-2 rounded-lg text-gray-50 hover:bg-gray-700 group"
+              onClick={handleOnSignout}
             >
               <svg
-                className="flex-shrink-0 w-5 h-5 text-gray-400 transition duration-75 group-hover:text-white"
+                className="flex-shrink-0 w-5 h-5 text-gray-400 transition duration-75 group-hover:text-gray-100"
                 aria-hidden="true"
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
@@ -106,7 +128,7 @@ const Sidebar = () => {
                 />
               </svg>
               <span className="flex-1 ms-3 whitespace-nowrap">Sign Out</span>
-            </a>
+            </button>
           </li>
         </ul>
       </div>

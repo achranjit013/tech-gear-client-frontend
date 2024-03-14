@@ -124,6 +124,18 @@ export const userLogin = (data) => {
   });
 };
 
+// user logout
+export const userLogout = (_id) => {
+  return axiosProcessor({
+    method: "post",
+    url: userAPI + "/logout",
+    data: {
+      _id,
+      accessJWT: getAccessJWT(),
+    },
+  });
+};
+
 // get user
 export const getUser = () => {
   return axiosProcessor({

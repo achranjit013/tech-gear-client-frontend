@@ -12,13 +12,12 @@ import { postFavouriteItemFromLocal } from "../product/productAction";
 const Login = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const location = useLocation();
+  let location = useLocation();
   const emailRef = useRef(null);
   const passRef = useRef(null);
 
   const { user } = useSelector((state) => state.userInfo);
-  const fromLocation =
-    location?.state?.from?.location?.pathname || "/dashboard";
+  const fromLocation = location?.state?.from?.location?.pathname || "/";
 
   useEffect(() => {
     !user?._id && dispatch(autoLogin());
@@ -68,6 +67,8 @@ const Login = () => {
 
         // dispatch user to store in redux
         dispatch(getUserInfoAction());
+
+        location = null;
       }
     }
   };
