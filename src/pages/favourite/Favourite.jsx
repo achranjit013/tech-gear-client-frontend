@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import MainLayout from "../../components/layouts/MainLayout";
 import { useDispatch, useSelector } from "react-redux";
 import FeaturedProducts from "../../components/products/FeaturedProducts";
-import { getFavouritesProductAction } from "../product/productAction";
+import { getFeaturedProductsAction } from "../product/productAction";
 import { Link } from "react-router-dom";
 
 const Favourite = () => {
@@ -11,9 +11,9 @@ const Favourite = () => {
 
   useEffect(() => {
     dispatch(
-      getFavouritesProductAction(
-        favouriteProducts?.map(({ productId }) => productId)
-      )
+      getFeaturedProductsAction({
+        ids: favouriteProducts?.map(({ productId }) => productId),
+      })
     );
   }, [dispatch, favouriteProducts?.length]);
 

@@ -2,7 +2,6 @@ import { toast } from "react-toastify";
 import {
   deleteAFavourite,
   fetchFavourites,
-  getFavouriteProducts,
   getProducts,
   postAFavourite,
 } from "../../helper/axiosHelper";
@@ -11,26 +10,17 @@ import {
   setFeaturedProducts,
   setSelectedProduct,
 } from "./productSlice";
-import LoadingToast from "../../components/customToast/LoadingToast";
-
-export const getLatestArrivalsAction = () => async (dispatch) => {
-  const { status, findResult } = await getProducts();
-
-  if (status === "success") {
-    dispatch(setFeaturedProducts(findResult));
-  }
-};
 
 export const getSelectedProductAction = (slug) => async (dispatch) => {
-  const { status, findResult } = await getProducts(slug);
+  const { status, findResult } = await getProducts({ slug });
 
   if (status === "success") {
     dispatch(setSelectedProduct(findResult));
   }
 };
 
-export const getFavouritesProductAction = (ids) => async (dispatch) => {
-  const { status, findResult } = await getFavouriteProducts(ids.join(","));
+export const getFeaturedProductsAction = (obj) => async (dispatch) => {
+  const { status, findResult } = await getProducts(obj);
 
   if (status === "success") {
     dispatch(setFeaturedProducts(findResult));

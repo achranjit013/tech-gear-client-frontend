@@ -5,12 +5,11 @@ import MainLayout from "../../components/layouts/MainLayout";
 import { Link, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  getAllFavouriteItemsAction,
   getSelectedProductAction,
   postNewFavouriteItemAction,
 } from "./productAction";
 import {
-  getSelectedProductCategoryAction,
+  getSelectedCategoryAction,
   getSelectedProductSubCategoryAction,
 } from "../category/categoryAction";
 import { postNewCartItemAction } from "../cart/cartAction";
@@ -50,7 +49,7 @@ const ProductLanding = () => {
     fetchData(); // Invoke the fetch function
 
     if (selectedProduct?._id) {
-      dispatch(getSelectedProductCategoryAction(selectedProduct.categoryId));
+      dispatch(getSelectedCategoryAction({ _id: selectedProduct.categoryId }));
       dispatch(
         getSelectedProductSubCategoryAction(selectedProduct.subCategoryId)
       );

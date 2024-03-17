@@ -2,6 +2,23 @@
 @tailwind components;
 @tailwind utilities;
 
+/* carousel */
 .snap-mandatory {
   border-radius: 0 !important;
+}
+
+/* react slick custom css */
+.slick-prev {
+  left: 0px !important;
+  z-index: 100000000;
+}
+
+.slick-next {
+  right: 0px !important;
+  z-index: 100000000;
+}
+
+.slick-next:before,
+.slick-prev:before {
+  color: rgb(17 24 39) !important;
 }

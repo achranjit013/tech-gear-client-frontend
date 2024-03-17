@@ -23,7 +23,7 @@ const Checkout = () => {
     const fetchData = async () => {
       try {
         const promises = cartItems?.map(async ({ _id, slug, size, qty }) => {
-          const { findResult } = await getProducts(slug, size);
+          const { findResult } = await getProducts({ slug, size });
 
           if (findResult?._id) {
             const obj = {

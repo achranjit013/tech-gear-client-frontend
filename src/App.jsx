@@ -13,6 +13,7 @@ import OrderHistory from "./pages/orderHistory/OrderHistory";
 import CreateAccount from "./pages/user/CreateAccount";
 import VerifyEmail from "./pages/user/VerifyEmail";
 import Favourite from "./pages/favourite/Favourite";
+import CategoryLanding from "./pages/category/CategoryLanding";
 
 function App() {
   return (
@@ -22,8 +23,9 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/verify-email" element={<VerifyEmail />} />
         <Route path="/create-account" element={<CreateAccount />} />
-        <Route path="/products" element={<Products />} />
+        {/* <Route path="/products" element={<Products />} /> */}
         <Route path="/products/:slug" element={<ProductLanding />} />
+        <Route path="/products" element={<CategoryLanding />} />
         <Route path="/cart" element={<Cart />} />
         <Route path="/favourites" element={<Favourite />} />
 

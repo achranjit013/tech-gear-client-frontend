@@ -1,62 +1,81 @@
-const categories = [
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Link } from "react-router-dom";
+import { getAllCategoriesAction } from "../../pages/category/categoryAction";
+import Slider from "react-slick";
+
+const images = [
   {
-    id: 1,
-    name: "Earthen Bottle",
-    href: "#",
-    imageSrc:
-      "https://tailwindui.com/img/ecommerce-images/category-page-04-image-card-01.jpg",
-    imageAlt:
-      "Tall slender porcelain bottle with natural clay textured body and cork stopper.",
+    img: "https://tailwindui.com/img/ecommerce-images/category-page-04-image-card-01.jpg",
   },
   {
-    id: 2,
-    name: "Nomad Tumbler",
-    href: "#",
-    imageSrc:
-      "https://tailwindui.com/img/ecommerce-images/category-page-04-image-card-02.jpg",
-    imageAlt:
-      "Olive drab green insulated bottle with flared screw lid and flat top.",
+    img: "https://tailwindui.com/img/ecommerce-images/category-page-04-image-card-02.jpg",
   },
   {
-    id: 3,
-    name: "Focus Paper Refill",
-    href: "#",
-    imageSrc:
-      "https://tailwindui.com/img/ecommerce-images/category-page-04-image-card-03.jpg",
-    imageAlt:
-      "Person using a pen to cross a task off a categoryivity paper card.",
+    img: "https://tailwindui.com/img/ecommerce-images/category-page-04-image-card-03.jpg",
   },
   {
-    id: 4,
-    name: "Machined Mechanical Pencil",
-    href: "#",
-    imageSrc:
-      "https://tailwindui.com/img/ecommerce-images/category-page-04-image-card-04.jpg",
-    imageAlt:
-      "Hand holding black machined steel mechanical pencil with brass tip and top.",
+    img: "https://tailwindui.com/img/ecommerce-images/category-page-04-image-card-04.jpg",
   },
 ];
 
 const FeaturedCategories = () => {
+  let settings = {
+    dots: true,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+    autoplay: true,
+    autoplaySpeed: 5000,
+  };
+
+  const dispatch = useDispatch();
+  const { categories } = useSelector((state) => state.categoryInfo);
+
+  useEffect(() => {
+    dispatch(getAllCategoriesAction());
+  }, [dispatch]);
+
   return (
     <div className="bg-white">
-      <div className="mx-auto max-w-2xl px-4 pb-16 lg:max-w-7xl lg:px-8 -my-6 divide-y divide-gray-500/30">
-        <h2 className="space-y-2 py-6 font-semibold uppercase">
-          Featured Categories
+      <div className="mx-auto max-w-4xl px-4 py-16 lg:max-w-7xl lg:px-8 divide-y divide-gray-500/30">
+        <h2 className="space-y-2 pb-6 font-semibold uppercase">
+          Shop by Categories
         </h2>
 
-        <div className="grid grid-cols-2 gap-x-6 gap-y-10 lg:grid-cols-4 xl:gap-x-8 space-y-2 py-6">
-          {categories.map((category) => (
-            <a key={category.id} href={category.href} className="group">
-              <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-lg bg-gray-200 xl:aspect-h-8 xl:aspect-w-7">
-                <img
-                  src={category.imageSrc}
-                  alt={category.imageAlt}
-                  className="h-full w-full object-cover object-center group-hover:opacity-75"
-                />
+        <div className="flex flex-nowrap overflow-x-auto py-6">
+          {categories?.map((category) => (
+            <div
+              key={category._id}
+              className="group flex-shrink-0 mr-6 last:mr-0"
+            >
+              <div className="aspect-h-[0.16] md:aspect-h-[0.12] aspect-w-1 w-44 md:w-56 xl:w-64 overflow-hidden rounded-lg bg-gray-200">
+                <Slider {...settings}>
+                  {images.map(({ img }, index) => (
+                    <div key={index} className="">
+                      <Link
+                        to={`/products?category=` + category?.slug}
+                        target="_blank"
+                        className="block"
+                      >
+                        <div className="h-full w-full">
+                          <img
+                            src={img}
+                            alt={`Image ${index}`}
+                            className="h-full w-full object-cover object-center group-hover:opacity-75"
+                          />
+                        </div>
+                      </Link>
+                    </div>
+                  ))}
+                </Slider>
               </div>
-              <h3 className="mt-4 text-sm text-gray-700">{category.name}</h3>
-            </a>
+
+              <h3 className="mt-2 text-sm text-gray-700 capitalize font-medium">
+                {category.title}
+              </h3>
+            </div>
           ))}
         </div>
       </div>

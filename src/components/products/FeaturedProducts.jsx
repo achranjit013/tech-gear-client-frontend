@@ -15,10 +15,6 @@ const FeaturedProducts = () => {
   const { reviews } = useSelector((state) => state.reviewInfo);
   const { user } = useSelector((state) => state.userInfo);
 
-  useEffect(() => {
-    dispatch(getReviewAction());
-  }, [dispatch]);
-
   const handleOnAddFavouriteBtn = (productId, favourite) => {
     const obj = {
       userId: user?._id,

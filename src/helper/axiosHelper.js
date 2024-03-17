@@ -60,32 +60,20 @@ const axiosProcessor = async ({
 };
 
 // get products
-export const getProducts = (slug, size) => {
+export const getProducts = (obj) => {
   return axiosProcessor({
     method: "get",
+    isPrivate: obj?.ids ? true : false,
     url:
-      slug && size
-        ? productAPI + "/" + slug + "/" + size
-        : slug
-        ? productAPI + "/" + slug
+      obj?.slug && obj?.size
+        ? productAPI + "?slug=" + obj.slug + "&size=" + obj.size
+        : obj?.slug
+        ? productAPI + "/" + obj.slug
+        : obj?.categoryId
+        ? productAPI + "?categoryId=" + obj.categoryId
+        : obj?.ids
+        ? productAPI + "?ids=" + obj.ids.join(",")
         : productAPI,
-  });
-};
-
-// get products
-export const getFavouriteProducts = (ids) => {
-  return axiosProcessor({
-    method: "get",
-    url: productAPI + "/?ids=" + ids,
-    isPrivate: true,
-  });
-};
-
-// get products for cart
-export const getProductsForCart = (data) => {
-  return axiosProcessor({
-    method: "get",
-    url: productAPI + "/cart-item/" + data.slug + "&" + data.size,
   });
 };
 
@@ -100,10 +88,14 @@ export const updateProductsQty = (data) => {
 };
 
 // get categories
-export const getCategories = (_id) => {
+export const getCategories = (obj) => {
   return axiosProcessor({
     method: "get",
-    url: _id ? categoryAPI + "/" + _id : categoryAPI,
+    url: obj?._id
+      ? categoryAPI + "/?_id=" + obj._id
+      : obj?.slug
+      ? categoryAPI + "/?slug=" + obj.slug
+      : categoryAPI,
   });
 };
 

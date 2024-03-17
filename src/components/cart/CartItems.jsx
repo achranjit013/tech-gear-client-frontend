@@ -1,10 +1,9 @@
 import React, { useEffect, useState, useContext } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { getProducts, getProductsForCart } from "../../helper/axiosHelper";
+import { getProducts } from "../../helper/axiosHelper";
 import {
   deleteCartItemAction,
-  setCartItemsAction,
   updateCartItemAction,
 } from "../../pages/cart/cartAction";
 
@@ -25,7 +24,7 @@ const CartItems = ({ cartPopover, checkout }) => {
     const fetchData = async () => {
       try {
         const promises = cartItems?.map(async ({ _id, slug, size, qty }) => {
-          const { findResult } = await getProducts(slug, size);
+          const { findResult } = await getProducts({ slug, size });
 
           if (findResult?._id) {
             const obj = {

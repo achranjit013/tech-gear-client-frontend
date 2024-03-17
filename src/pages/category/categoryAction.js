@@ -1,9 +1,9 @@
 import { getCategories, getSubCategories } from "../../helper/axiosHelper";
-import { setSelectedCategory } from "./categorySlice";
+import { setCategories, setSelectedCategory } from "./categorySlice";
 import { setSelectedSubCategory } from "./subCategorySlice";
 
-export const getSelectedProductCategoryAction = (_id) => async (dispatch) => {
-  const { status, findResult } = await getCategories(_id);
+export const getSelectedCategoryAction = (obj) => async (dispatch) => {
+  const { status, findResult } = await getCategories(obj);
 
   if (status === "success") {
     dispatch(setSelectedCategory(findResult));
@@ -18,3 +18,11 @@ export const getSelectedProductSubCategoryAction =
       dispatch(setSelectedSubCategory(findResult));
     }
   };
+
+export const getAllCategoriesAction = () => async (dispatch) => {
+  const { status, findResult } = await getCategories();
+
+  if (status === "success") {
+    dispatch(setCategories(findResult));
+  }
+};

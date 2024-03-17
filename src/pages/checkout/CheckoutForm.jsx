@@ -145,7 +145,10 @@ export default function CheckoutForm({
             );
 
             // check if product exists
-            const { findResult } = await getProducts(slug, selectedSize);
+            const { findResult } = await getProducts({
+              slug,
+              size: selectedSize,
+            });
 
             if (findResult?._id) {
               // if the product exist

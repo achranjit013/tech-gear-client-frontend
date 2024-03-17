@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { getLatestArrivalsAction } from "../../pages/product/productAction";
+import { getFeaturedProductsAction } from "../../pages/product/productAction";
 import { useDispatch } from "react-redux";
 import FeaturedProducts from "./FeaturedProducts";
 import { Link } from "react-router-dom";
@@ -8,7 +8,7 @@ const LatestArrival = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(getLatestArrivalsAction());
+    dispatch(getFeaturedProductsAction());
   }, [dispatch]);
 
   return (
