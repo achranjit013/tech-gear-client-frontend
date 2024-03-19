@@ -17,7 +17,6 @@ import {
 import CategoriesPopover from "./CategoriesPopover";
 import { getAllCategoriesAction } from "../../pages/category/categoryAction";
 
-// to do.. navigation acc to categories stored in db
 const navigation = [
   { name: "Hot Deals 🔥", href: "#" },
   { name: "Company", href: "#" },
@@ -32,6 +31,7 @@ const Header = () => {
   const { user } = useSelector((state) => state.userInfo);
   const { favouriteProducts } = useSelector((state) => state.productInfo);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [categoryMenuOpen, setCategoryMenuOpen] = useState(false);
   const [isShowing, setIsShowing] = useState(false); //to show cart window on mouse hover / enter
 
   useEffect(() => {
@@ -46,6 +46,11 @@ const Header = () => {
 
     dispatch(getAllCategoriesAction());
   }, [dispatch, user?._id]);
+
+  const handleOnHamburgerMenuClick = () => {
+    setMobileMenuOpen(true);
+    setCategoryMenuOpen(false);
+  };
 
   return (
     <header className="sticky inset-x-0 top-0 z-50 bg-gray-800 text-neutral-200">
@@ -65,7 +70,6 @@ const Header = () => {
 
         <div className="hidden lg:flex lg:gap-x-9">
           {/* start */}
-
           <Popover className="">
             {({ open }) => (
               <>
@@ -96,7 +100,6 @@ const Header = () => {
               </>
             )}
           </Popover>
-
           {/* end */}
 
           {navigation.map((item) => (
@@ -171,7 +174,7 @@ const Header = () => {
           <button
             type="button"
             className="inline-flex items-center p-1 w-9 h-9 justify-center text-sm bg-gray-700 hover:bg-gray-600 text-gray-400 hover:text-gray-200  rounded-lg lg:hidden focus:outline-none focus:ring-2 focus:ring-gray-600 transition ease-in duration-300 shadow cursor-pointer"
-            onClick={() => setMobileMenuOpen(true)}
+            onClick={handleOnHamburgerMenuClick}
           >
             <svg
               className="w-5 h-5"
@@ -199,23 +202,27 @@ const Header = () => {
         onClose={setMobileMenuOpen}
       >
         <div className="fixed inset-0 z-50" />
-        <Dialog.Panel className="fixed inset-y-0 right-0 z-50 w-full overflow-y-auto bg-white px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10">
+        <Dialog.Panel className="fixed inset-y-0 right-0 z-50 w-full overflow-y-auto bg-gray-50 px-6 py-6">
+          {/* title and close btn */}
           <div className="flex items-center justify-between">
             <Link to="/" className="-m-1.5 p-1.5">
-              <span className="h-8 font-semibold text-xl uppercase">
+              <span className="h-8 font-bold text-xl uppercase text-gray-800">
                 Variété vortéx
               </span>
             </Link>
+
             <button
               type="button"
-              className="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg lg:hidden hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-300"
+              className="inline-flex items-center p-1 w-9 h-9 justify-center text-sm text-gray-800 rounded-lg lg:hidden hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-800"
               onClick={() => setMobileMenuOpen(false)}
             >
               <XMarkIcon className="h-6 w-6" aria-hidden="true" />
             </button>
           </div>
+
           <div className="mt-6 flow-root">
             <div className="-my-6 divide-y divide-gray-500/10">
+              {/* search bar */}
               <div className="space-y-2 py-6 sm:py-3">
                 <div className="relative block sm:hidden">
                   <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
@@ -244,23 +251,41 @@ const Header = () => {
                   />
                 </div>
               </div>
+
+              {/* menu links */}
               <div className="space-y-2 py-6">
+                <div className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-800 hover:bg-gray-200">
+                  <button
+                    onClick={() => setCategoryMenuOpen(!categoryMenuOpen)}
+                  >
+                    Categories
+                  </button>
+                </div>
+
+                {categoryMenuOpen && (
+                  <div className="">
+                    <CategoriesPopover />
+                  </div>
+                )}
+
                 {navigation.map((item) => (
                   <Link
                     key={item.name}
                     to={item.href}
-                    className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-800 hover:bg-gray-50"
+                    className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-800 hover:bg-gray-200"
                   >
                     {item.name}
                   </Link>
                 ))}
               </div>
+
+              {/* user links */}
               <div className="py-6">
                 {user?._id ? (
                   <>
                     <Link
                       to="/dashboard"
-                      className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-800 hover:bg-gray-50"
+                      className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-800 hover:bg-gray-200"
                     >
                       My Account
                     </Link>
@@ -269,13 +294,13 @@ const Header = () => {
                   <>
                     <Link
                       to="/login"
-                      className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-800 hover:bg-gray-50"
+                      className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-800 hover:bg-gray-200"
                     >
                       Sign In
                     </Link>
                     <Link
                       to="/create-account"
-                      className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-800 hover:bg-gray-50"
+                      className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-800 hover:bg-gray-300"
                     >
                       Create Account
                     </Link>
@@ -286,6 +311,11 @@ const Header = () => {
           </div>
         </Dialog.Panel>
       </Dialog>
+
+      {/* <CategoriesDialogPanel
+        categoryMenuOpen={categoryMenuOpen}
+        setCategoryMenuOpen={setCategoryMenuOpen}
+      /> */}
     </header>
   );
 };

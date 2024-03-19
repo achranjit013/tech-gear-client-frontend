@@ -14,6 +14,7 @@ import CreateAccount from "./pages/user/CreateAccount";
 import VerifyEmail from "./pages/user/VerifyEmail";
 import Favourite from "./pages/favourite/Favourite";
 import CategoryLanding from "./pages/category/CategoryLanding";
+import CategoriesPopover from "./components/layouts/CategoriesPopover";
 
 function App() {
   return (
@@ -28,6 +29,10 @@ function App() {
         <Route path="/products" element={<CategoryLanding />} />
         <Route path="/cart" element={<Cart />} />
         <Route path="/favourites" element={<Favourite />} />
+        <Route
+          path="/categories-popover-menu"
+          element={<CategoriesPopover />}
+        />
 
         {/* below this point are all private routes */}
 

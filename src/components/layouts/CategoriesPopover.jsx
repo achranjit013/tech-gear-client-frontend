@@ -4,6 +4,7 @@ import { getSubCategoriesByCategoryIdAction } from "../../pages/category/categor
 import { getProductsBySubCategoryIdAction } from "../../pages/product/productAction";
 import { TbCategory, TbCategory2 } from "react-icons/tb";
 import { IoMdListBox } from "react-icons/io";
+import { XMarkIcon } from "@heroicons/react/24/outline";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -51,10 +52,10 @@ const CategoriesPopover = () => {
   };
 
   return (
-    <div className="grid grid-cols-[300px_300px_minmax(300px,_1fr)] divide-x-[0.1px]">
+    <div className="grid grid-cols-[270px_minmax(300px,_1fr)] lg:grid-cols-[300px_300px_minmax(300px,_1fr)] bg-gray-50 lg:bg-gray-800 border border-gray-300 lg:border-none rounded-lg lg:rounded-none h-auto lg:h-screen">
       {/* categories */}
       <aside
-        className="border-t border-t-gray-50 h-screen bg-gray-800"
+        className="lg:border-t border-r lg:border-t-gray-500 border-r-gray-300 lg:border-r-gray-500"
         aria-label="Sidebar"
       >
         <div className="px-6 py-4 overflow-y-auto">
@@ -64,8 +65,10 @@ const CategoriesPopover = () => {
                 <a
                   href={`/products?category=${category.slug}`}
                   className={classNames(
-                    index === lastClickedIndexCategory ? "bg-gray-700" : "",
-                    "flex items-center p-2 rounded-lg text-gray-50 hover:bg-gray-700 group"
+                    index === lastClickedIndexCategory
+                      ? "bg-gray-200 lg:bg-gray-700"
+                      : "",
+                    "flex items-center p-2 rounded-lg hover:bg-gray-200 lg:hover:bg-gray-700 group"
                   )}
                   onMouseEnter={() =>
                     fetchSubCategoriesOnMouseEnter(
@@ -78,18 +81,18 @@ const CategoriesPopover = () => {
                   <TbCategory
                     className={classNames(
                       index === lastClickedIndexCategory
-                        ? "text-gray-100"
-                        : "text-gray-400",
-                      "w-5 h-5 transition duration-75 group-hover:text-gray-100"
+                        ? "text-gray-800 lg:text-gray-100"
+                        : "text-gray-500 lg:text-gray-400",
+                      "w-5 h-5 transition duration-75 group-hover:text-gray-800 lg:group-hover:text-gray-100"
                     )}
                   />
 
                   <span
                     className={classNames(
                       index === lastClickedIndexCategory
-                        ? "text-gray-100"
-                        : "text-gray-400",
-                      "ms-3 uppercase transition duration-75 group-hover:text-gray-100"
+                        ? "text-gray-800 lg:text-gray-100"
+                        : "text-gray-500 lg:text-gray-400",
+                      "ms-3 uppercase transition duration-75 group-hover:text-gray-800 lg:group-hover:text-gray-100"
                     )}
                   >
                     {category.title}
@@ -103,7 +106,7 @@ const CategoriesPopover = () => {
 
       {/* subcategories */}
       <aside
-        className="border-t border-t-gray-50 h-screen bg-gray-800"
+        className="lg:border-t lg:border-r lg:border-t-gray-500 lg:border-r-gray-500"
         aria-label="Sidebar"
       >
         <div className="px-6 py-4 overflow-y-auto">
@@ -113,8 +116,10 @@ const CategoriesPopover = () => {
                 <a
                   href={`/products?category=${categorySlug}&subcategory=${subCategory.slug}`}
                   className={classNames(
-                    index === lastClickedIndexSubCategory ? "bg-gray-700" : "",
-                    "flex items-center p-2 rounded-lg text-gray-50 hover:bg-gray-700 group"
+                    index === lastClickedIndexSubCategory
+                      ? "bg-gray-200 lg:bg-gray-700"
+                      : "",
+                    "flex items-center p-2 rounded-lg hover:bg-gray-200 lg:hover:bg-gray-700 group"
                   )}
                   onMouseEnter={() =>
                     fetchProductsOnMouseEnter(subCategory._id, index)
@@ -122,18 +127,18 @@ const CategoriesPopover = () => {
                 >
                   <TbCategory2
                     className={classNames(
-                      index === lastClickedIndexCategory
-                        ? "text-gray-100"
-                        : "text-gray-400",
-                      "w-5 h-5 transition duration-75 group-hover:text-gray-100"
+                      index === lastClickedIndexSubCategory
+                        ? "text-gray-800 lg:text-gray-100"
+                        : "text-gray-500 lg:text-gray-400",
+                      "w-5 h-5 transition duration-75 group-hover:text-gray-800 lg:group-hover:text-gray-100"
                     )}
                   />
                   <span
                     className={classNames(
                       index === lastClickedIndexSubCategory
-                        ? "text-gray-100"
-                        : "text-gray-400",
-                      "ms-3 uppercase transition duration-75 group-hover:text-gray-100"
+                        ? "text-gray-800 lg:text-gray-100"
+                        : "text-gray-500 lg:text-gray-400",
+                      "ms-3 uppercase transition duration-75 group-hover:text-gray-800 lg:group-hover:text-gray-100"
                     )}
                   >
                     {subCategory.title}
@@ -143,7 +148,7 @@ const CategoriesPopover = () => {
             ))}
 
             {!subCategories?.length && (
-              <li className="flex items-center p-2 rounded-lg text-gray-50 bg-gray-700 group">
+              <li className="flex items-center p-2 rounded-lg bg-gray-200 lg:bg-gray-700 group">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
@@ -170,7 +175,7 @@ const CategoriesPopover = () => {
 
       {/* products */}
       <aside
-        className="border-t border-t-gray-50 h-screen bg-gray-800"
+        className="hidden lg:block lg:border-t lg:border-t-gray-500"
         aria-label="Sidebar"
       >
         <div className="px-6 py-4 overflow-y-auto">
