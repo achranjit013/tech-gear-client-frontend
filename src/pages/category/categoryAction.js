@@ -1,6 +1,6 @@
 import { getCategories, getSubCategories } from "../../helper/axiosHelper";
 import { setCategories, setSelectedCategory } from "./categorySlice";
-import { setSelectedSubCategory } from "./subCategorySlice";
+import { setSelectedSubCategory, setSubCategories } from "./subCategorySlice";
 
 export const getSelectedCategoryAction = (obj) => async (dispatch) => {
   const { status, findResult } = await getCategories(obj);
@@ -10,14 +10,13 @@ export const getSelectedCategoryAction = (obj) => async (dispatch) => {
   }
 };
 
-export const getSelectedProductSubCategoryAction =
-  (_id) => async (dispatch) => {
-    const { status, findResult } = await getSubCategories(_id);
+export const getSelectedSubCategoryAction = (obj) => async (dispatch) => {
+  const { status, findResult } = await getSubCategories(obj);
 
-    if (status === "success") {
-      dispatch(setSelectedSubCategory(findResult));
-    }
-  };
+  if (status === "success") {
+    dispatch(setSelectedSubCategory(findResult));
+  }
+};
 
 export const getAllCategoriesAction = () => async (dispatch) => {
   const { status, findResult } = await getCategories();
@@ -26,3 +25,21 @@ export const getAllCategoriesAction = () => async (dispatch) => {
     dispatch(setCategories(findResult));
   }
 };
+
+export const getSelectedProductSubCategoryAction =
+  (_id) => async (dispatch) => {
+    const { status, findResult } = await getSubCategories({ _id });
+
+    if (status === "success") {
+      dispatch(setSelectedSubCategory(findResult));
+    }
+  };
+
+export const getSubCategoriesByCategoryIdAction =
+  (categoryId) => async (dispatch) => {
+    const { status, findResult } = await getSubCategories({ categoryId });
+
+    if (status === "success") {
+      dispatch(setSubCategories(findResult));
+    }
+  };

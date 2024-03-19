@@ -1,10 +1,11 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  products: [],
-  featuredProducts: [],
-  selectedProduct: {},
-  favouriteProducts: [],
+  products: [], //holds all products
+  featuredProducts: [], // holds products for latest arrivals in home page and products for selected category
+  selectedProduct: {}, // holds one product that has been clicked by user
+  favouriteProducts: [], // holds products that has been set favourite by user
+  subcategoryProducts: [], // holds products for selected subcategory
 };
 
 const productSlice = createSlice({
@@ -23,6 +24,9 @@ const productSlice = createSlice({
     setFavouriteProducts: (state, { payload = [] }) => {
       state.favouriteProducts = payload;
     },
+    setSubcategoryProducts: (state, { payload = [] }) => {
+      state.subcategoryProducts = payload;
+    },
   },
 });
 
@@ -33,5 +37,6 @@ export const {
   setFeaturedProducts,
   setSelectedProduct,
   setFavouriteProducts,
+  setSubcategoryProducts,
 } = actions;
 export default reducer;

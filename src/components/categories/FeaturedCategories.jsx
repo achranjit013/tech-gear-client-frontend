@@ -1,7 +1,6 @@
-import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useEffect, useRef, useState } from "react";
+import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { getAllCategoriesAction } from "../../pages/category/categoryAction";
 import Slider from "react-slick";
 
 const images = [
@@ -26,16 +25,10 @@ const FeaturedCategories = () => {
     speed: 500,
     slidesToShow: 1,
     slidesToScroll: 1,
-    autoplay: true,
-    autoplaySpeed: 5000,
+    pauseOnHover: false,
   };
 
-  const dispatch = useDispatch();
   const { categories } = useSelector((state) => state.categoryInfo);
-
-  useEffect(() => {
-    dispatch(getAllCategoriesAction());
-  }, [dispatch]);
 
   return (
     <div className="bg-white">

@@ -73,6 +73,8 @@ export const getProducts = (obj) => {
         ? productAPI + "?categoryId=" + obj.categoryId
         : obj?.ids
         ? productAPI + "?ids=" + obj.ids.join(",")
+        : obj?.subCategoryId
+        ? productAPI + "?subCategoryId=" + obj.subCategoryId
         : productAPI,
   });
 };
@@ -100,10 +102,16 @@ export const getCategories = (obj) => {
 };
 
 // get subcategories
-export const getSubCategories = (_id) => {
+export const getSubCategories = (obj) => {
   return axiosProcessor({
     method: "get",
-    url: _id ? subCategoryAPI + "/" + _id : subCategoryAPI,
+    url: obj?._id
+      ? subCategoryAPI + "/?_id=" + obj._id
+      : obj?.categoryId
+      ? subCategoryAPI + "/?categoryId=" + obj.categoryId
+      : obj?.slug
+      ? subCategoryAPI + "/?slug=" + obj.slug
+      : subCategoryAPI,
   });
 };
 

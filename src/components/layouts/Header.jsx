@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Dialog } from "@headlessui/react";
+import { Dialog, Popover, Transition } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import TopNav from "./TopNav";
 import { useDispatch, useSelector } from "react-redux";
@@ -14,12 +14,12 @@ import {
   getAllFavouriteItemsAction,
   setFavouriteItemsAction,
 } from "../../pages/product/productAction";
+import CategoriesPopover from "./CategoriesPopover";
+import { getAllCategoriesAction } from "../../pages/category/categoryAction";
 
 // to do.. navigation acc to categories stored in db
 const navigation = [
-  { name: "Products", href: "/products" },
-  { name: "Categories", href: "/categories" },
-  { name: "Marketplace", href: "#" },
+  { name: "Hot Deals 🔥", href: "#" },
   { name: "Company", href: "#" },
 ];
 
@@ -32,6 +32,7 @@ const Header = () => {
   const { user } = useSelector((state) => state.userInfo);
   const { favouriteProducts } = useSelector((state) => state.productInfo);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isShowing, setIsShowing] = useState(false); //to show cart window on mouse hover / enter
 
   useEffect(() => {
     if (user?._id) {
@@ -42,6 +43,8 @@ const Header = () => {
       dispatch(setCartItemsAction());
       dispatch(setFavouriteItemsAction());
     }
+
+    dispatch(getAllCategoriesAction());
   }, [dispatch, user?._id]);
 
   return (
@@ -49,7 +52,7 @@ const Header = () => {
       <TopNav />
 
       <nav
-        className="flex items-center justify-between p-6 lg:px-8"
+        className="flex items-center justify-between p-6 lg:px-8 relative"
         aria-label="Global"
       >
         <div className="flex lg:flex-1">
@@ -61,6 +64,41 @@ const Header = () => {
         </div>
 
         <div className="hidden lg:flex lg:gap-x-9">
+          {/* start */}
+
+          <Popover className="">
+            {({ open }) => (
+              <>
+                <Popover.Button
+                  type="button"
+                  className="text-sm font-semibold leading-6"
+                  onMouseEnter={() => setIsShowing(true)}
+                  onMouseLeave={() => setIsShowing(false)}
+                >
+                  Categories
+                </Popover.Button>
+                <Transition
+                  as={Fragment}
+                  enter="transition ease-out duration-300"
+                  enterFrom="opacity-0 translate-y-1"
+                  enterTo="opacity-100 translate-y-0"
+                  leave="transition ease-in duration-300"
+                  leaveFrom="opacity-100 translate-y-0"
+                  leaveTo="opacity-0 translate-y-1"
+                  show={isShowing}
+                  onMouseEnter={() => setIsShowing(true)}
+                  onMouseLeave={() => setIsShowing(false)}
+                >
+                  <Popover.Panel className="absolute left-0 right-0 z-10 w-screen transform max-h-screen overflow-y-scroll pt-7 rounded-md border border-gray-800 border-t-0 rounded-t-none">
+                    <CategoriesPopover />
+                  </Popover.Panel>
+                </Transition>
+              </>
+            )}
+          </Popover>
+
+          {/* end */}
+
           {navigation.map((item) => (
             <Link
               key={item.name}

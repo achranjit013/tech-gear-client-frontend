@@ -8,17 +8,21 @@
 }
 
 /* react slick custom css */
-.slick-prev {
+.slick-dots li button:before {
+  font-size: 12px !important;
+}
+
+/* .slick-prev {
   left: 0px !important;
-  z-index: 100000000;
+  z-index: 10;
 }
 
 .slick-next {
   right: 0px !important;
-  z-index: 100000000;
+  z-index: 10;
 }
 
 .slick-next:before,
 .slick-prev:before {
   color: rgb(17 24 39) !important;
-}
+} */
