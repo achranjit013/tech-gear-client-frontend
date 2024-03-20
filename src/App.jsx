@@ -15,6 +15,7 @@ import VerifyEmail from "./pages/user/VerifyEmail";
 import Favourite from "./pages/favourite/Favourite";
 import CategoryLanding from "./pages/category/CategoryLanding";
 import CategoriesPopover from "./components/layouts/CategoriesPopover";
+import Unsubscribe from "./pages/user/Unsubscribe";
 
 function App() {
   return (
@@ -23,8 +24,8 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/verify-email" element={<VerifyEmail />} />
+        <Route path="/unsubscribe" element={<Unsubscribe />} />
         <Route path="/create-account" element={<CreateAccount />} />
-        {/* <Route path="/products" element={<Products />} /> */}
         <Route path="/products/:slug" element={<ProductLanding />} />
         <Route path="/products" element={<CategoryLanding />} />
         <Route path="/cart" element={<Cart />} />

@@ -10,6 +10,7 @@ const userAPI = rootAPI + "/users";
 const stripeAPI = rootAPI + "/payments";
 const orderAPI = rootAPI + "/orders";
 const reviewAPI = rootAPI + "/reviews";
+const subscriptionAPI = rootAPI + "/subscriptions";
 
 const getAccessJWT = () => {
   return sessionStorage.getItem("accessJWT");
@@ -321,5 +322,23 @@ export const getReviews = (obj) => {
       ? reviewAPI + "/product" + obj.productId
       : reviewAPI,
     // isPrivate: true,
+  });
+};
+
+// create subscription
+export const postNewSubscription = (data) => {
+  return axiosProcessor({
+    method: "post",
+    url: subscriptionAPI,
+    data,
+  });
+};
+
+// delete subscription
+export const deleteUserSubscription = (data) => {
+  return axiosProcessor({
+    method: "delete",
+    url: subscriptionAPI,
+    data,
   });
 };
