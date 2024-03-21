@@ -31,7 +31,7 @@ const VerifyEmail = () => {
         <span className="bg-gray-100 text-gray-700 p-1 rounded">
           {associate}
         </span>{" "}
-        to Variété Vortéx!
+        to MarketBay!
       </p>
 
       {showSpinner && (

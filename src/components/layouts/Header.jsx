@@ -16,9 +16,11 @@ import {
 } from "../../pages/product/productAction";
 import CategoriesPopover from "./CategoriesPopover";
 import { getAllCategoriesAction } from "../../pages/category/categoryAction";
+import mblogo from "../../assets/mblogo.png";
+import mbname from "../../assets/mbname.png";
 
 const navigation = [
-  { name: "Hot Deals 🔥", href: "#" },
+  { name: "Hot Deals🔥", href: "#" },
   { name: "Company", href: "#" },
 ];
 
@@ -61,10 +63,11 @@ const Header = () => {
         aria-label="Global"
       >
         <div className="flex lg:flex-1">
-          <Link to="/" className="-m-1.5 p-1.5">
-            <span className="h-8 font-semibold text-xl uppercase">
-              Variété Vortéx
-            </span>
+          <Link
+            to="/"
+            className="-m-1.5 p-1.5 flex gap-2 items-start justify-cente"
+          >
+            <img src={mbname} alt="name" className="w-36 md:w-48" />
           </Link>
         </div>
 
@@ -75,7 +78,7 @@ const Header = () => {
               <>
                 <Popover.Button
                   type="button"
-                  className="text-sm font-semibold leading-6"
+                  className="text-lg font-mono leading-6"
                   onMouseEnter={() => setIsShowing(true)}
                   onMouseLeave={() => setIsShowing(false)}
                 >
@@ -106,7 +109,7 @@ const Header = () => {
             <Link
               key={item.name}
               to={item.href}
-              className="text-sm font-semibold leading-6"
+              className="text-lg font-mono  leading-6"
             >
               {item.name}
             </Link>
@@ -202,25 +205,23 @@ const Header = () => {
         onClose={setMobileMenuOpen}
       >
         <div className="fixed inset-0 z-50" />
-        <Dialog.Panel className="fixed inset-y-0 right-0 z-50 w-full overflow-y-auto bg-gray-50 px-6 py-6">
+        <Dialog.Panel className="fixed inset-y-0 right-0 z-50 w-full overflow-y-auto bg-gray-50">
           {/* title and close btn */}
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between bg-gray-800 p-6">
             <Link to="/" className="-m-1.5 p-1.5">
-              <span className="h-8 font-bold text-xl uppercase text-gray-800">
-                Variété vortéx
-              </span>
+              <img src={mbname} alt="name" className="w-36 md:w-48" />
             </Link>
 
             <button
               type="button"
-              className="inline-flex items-center p-1 w-9 h-9 justify-center text-sm text-gray-800 rounded-lg lg:hidden hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-800"
+              className="inline-flex items-center p-1 w-9 h-9 justify-center text-sm text-gray-800 rounded-lg lg:hidden bg-gray-300 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-800"
               onClick={() => setMobileMenuOpen(false)}
             >
               <XMarkIcon className="h-6 w-6" aria-hidden="true" />
             </button>
           </div>
 
-          <div className="mt-6 flow-root">
+          <div className="mt-6 flow-root p-6">
             <div className="-my-6 divide-y divide-gray-500/10">
               {/* search bar */}
               <div className="space-y-2 py-6 sm:py-3">
@@ -311,11 +312,6 @@ const Header = () => {
           </div>
         </Dialog.Panel>
       </Dialog>
-
-      {/* <CategoriesDialogPanel
-        categoryMenuOpen={categoryMenuOpen}
-        setCategoryMenuOpen={setCategoryMenuOpen}
-      /> */}
     </header>
   );
 };

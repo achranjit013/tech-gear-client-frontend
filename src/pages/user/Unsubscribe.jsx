@@ -28,7 +28,7 @@ const Unsubscribe = () => {
       <p className="shadow-lg p-6 text-center font-bold bg-gray-800 text-gray-50">
         Welcome{" "}
         <span className="bg-gray-100 text-gray-800 p-1 rounded">{email}</span>{" "}
-        to Variété Vortéx!
+        to MarketBay!
       </p>
 
       {showSpinner && (

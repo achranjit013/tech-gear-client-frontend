@@ -11,7 +11,7 @@ const TopNav = () => {
       aria-label="Global"
     >
       <div className="hidden lg:flex lg:flex-1">
-        <span className="font-semibold text-sm uppercase">
+        <span className="font-mono text-sm uppercase">
           Discover the Whirlwind of Variety!
         </span>
       </div>
@@ -19,16 +19,16 @@ const TopNav = () => {
       <div className="hidden lg:flex lg:flex-1 lg:justify-end lg:gap-x-6">
         {user?._id ? (
           <>
-            <Link to="/dashboard" className="text-sm font-semibold">
+            <Link to="/dashboard" className="text-sm font-mono">
               My Account
             </Link>
           </>
         ) : (
           <>
-            <Link to="/login" className="text-sm font-semibold">
+            <Link to="/login" className="text-sm font-mono">
               Sign In
             </Link>
-            <Link to="/create-account" className="text-sm font-semibold">
+            <Link to="/create-account" className="text-sm font-mono">
               Create Account
             </Link>
           </>
