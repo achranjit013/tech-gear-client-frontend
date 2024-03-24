@@ -28,6 +28,7 @@ function App() {
         <Route path="/create-account" element={<CreateAccount />} />
         <Route path="/products/:slug" element={<ProductLanding />} />
         <Route path="/products" element={<CategoryLanding />} />
+        <Route path="/products/all" element={<Products />} />
         <Route path="/cart" element={<Cart />} />
         <Route path="/favourites" element={<Favourite />} />
         <Route

@@ -76,6 +76,8 @@ export const getProducts = (obj) => {
         ? productAPI + "?ids=" + obj.ids.join(",")
         : obj?.subCategoryId
         ? productAPI + "?subCategoryId=" + obj.subCategoryId
+        : obj?.prducts === "all"
+        ? productAPI + "/all"
         : productAPI,
   });
 };

@@ -15,7 +15,10 @@ import {
   setFavouriteItemsAction,
 } from "../../pages/product/productAction";
 import CategoriesPopover from "./CategoriesPopover";
-import { getAllCategoriesAction } from "../../pages/category/categoryAction";
+import {
+  getAllCategoriesAction,
+  getAllSubCategoriesAction,
+} from "../../pages/category/categoryAction";
 import mblogo from "../../assets/mblogo.png";
 import mbname from "../../assets/mbname.png";
 
@@ -47,6 +50,7 @@ const Header = () => {
     }
 
     dispatch(getAllCategoriesAction());
+    dispatch(getAllSubCategoriesAction());
   }, [dispatch, user?._id]);
 
   const handleOnHamburgerMenuClick = () => {

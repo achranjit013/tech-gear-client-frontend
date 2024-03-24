@@ -55,7 +55,7 @@ const CategoryLanding = () => {
               {subcategorySlug && ` / ${selectedSubCategory?.title}`}
             </h2>
             <Link
-              to="/products"
+              to="/products/all"
               className="space-y-2 font-semibold hover:font-bold transition-all duration-300 text-indigo-600"
             >
               <span className="inset-0" aria-hidden="true"></span>Shop all

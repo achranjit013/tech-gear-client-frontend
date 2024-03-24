@@ -26,6 +26,14 @@ export const getAllCategoriesAction = () => async (dispatch) => {
   }
 };
 
+export const getAllSubCategoriesAction = () => async (dispatch) => {
+  const { status, findResult } = await getSubCategories();
+
+  if (status === "success") {
+    dispatch(setSubCategories(findResult));
+  }
+};
+
 export const getSelectedProductSubCategoryAction =
   (_id) => async (dispatch) => {
     const { status, findResult } = await getSubCategories({ _id });

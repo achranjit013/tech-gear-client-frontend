@@ -13,15 +13,15 @@ const LatestArrival = () => {
 
   return (
     <>
-      <div className="bg-gray-100">
-        <div className="mx-auto max-w-4xl px-4 py-16 lg:max-w-7xl lg:px-8 divide-y divide-gray-500/30">
+      <div className="bg-white">
+        <div className="mx-auto max-w-4xl px-4 pt-16 lg:max-w-7xl lg:px-8 divide-y divide-gray-500/30">
           {/* title and cta */}
           <div className="flex flex-col xxs:flex-row xxs:justify-between pb-6">
             <h2 className="space-y-2 font-semibold uppercase">
               Latest Arrivals
             </h2>
             <Link
-              to="/products"
+              to="/products/all"
               className="space-y-2 font-semibold hover:font-bold transition-all duration-300 text-indigo-600"
             >
               <span className="inset-0" aria-hidden="true"></span>Shop all
