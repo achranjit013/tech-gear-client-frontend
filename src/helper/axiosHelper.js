@@ -78,6 +78,8 @@ export const getProducts = (obj) => {
         ? productAPI + "?subCategoryId=" + obj.subCategoryId
         : obj?.prducts === "all"
         ? productAPI + "/all"
+        : obj?.menu
+        ? productAPI + "?menu=true"
         : productAPI,
   });
 };

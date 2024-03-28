@@ -12,6 +12,7 @@ import {
 import { autoLogin } from "../../pages/user/userAction";
 import {
   getAllFavouriteItemsAction,
+  getAllProductsForMenuAction,
   setFavouriteItemsAction,
 } from "../../pages/product/productAction";
 import CategoriesPopover from "./CategoriesPopover";
@@ -19,7 +20,6 @@ import {
   getAllCategoriesAction,
   getAllSubCategoriesAction,
 } from "../../pages/category/categoryAction";
-import mblogo from "../../assets/mblogo.png";
 import mbname from "../../assets/mbname.png";
 
 const navigation = [
@@ -51,6 +51,7 @@ const Header = () => {
 
     dispatch(getAllCategoriesAction());
     dispatch(getAllSubCategoriesAction());
+    dispatch(getAllProductsForMenuAction());
   }, [dispatch, user?._id]);
 
   const handleOnHamburgerMenuClick = () => {
@@ -113,7 +114,7 @@ const Header = () => {
             <Link
               key={item.name}
               to={item.href}
-              className="text-lg font-mono  leading-6"
+              className="text-lg font-mono leading-6"
             >
               {item.name}
             </Link>
@@ -259,13 +260,12 @@ const Header = () => {
 
               {/* menu links */}
               <div className="space-y-2 py-6">
-                <div className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-800 hover:bg-gray-200">
-                  <button
-                    onClick={() => setCategoryMenuOpen(!categoryMenuOpen)}
-                  >
-                    Categories
-                  </button>
-                </div>
+                <Link
+                  className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-800 hover:bg-gray-200"
+                  onClick={() => setCategoryMenuOpen(!categoryMenuOpen)}
+                >
+                  Categories
+                </Link>
 
                 {categoryMenuOpen && (
                   <div className="">

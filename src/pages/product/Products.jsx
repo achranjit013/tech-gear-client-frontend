@@ -21,7 +21,9 @@ const Products = () => {
             </h2>
           </div>
 
-          <FeaturedProducts />
+          <div className="grid grid-cols-1 xxs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 place-items-center gap-y-6 gap-x-6 pt-6">
+            <FeaturedProducts />
+          </div>
         </div>
       </div>
     </MainLayout>

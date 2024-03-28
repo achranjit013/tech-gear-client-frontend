@@ -66,7 +66,9 @@ const CategoryLanding = () => {
           {/* card body */}
           <div>
             {selectedCategory?._id && featuredProducts?.length ? (
-              <FeaturedProducts />
+              <div className="grid grid-cols-1 xxs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 place-items-center gap-y-6 gap-x-6 pt-6">
+                <FeaturedProducts />
+              </div>
             ) : (
               <>
                 <p className="pt-6 text-center font-medium">

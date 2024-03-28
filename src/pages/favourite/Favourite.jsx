@@ -25,7 +25,7 @@ const Favourite = () => {
           <div className="flex flex-col xxs:flex-row xxs:justify-between pb-6">
             <h2 className="space-y-2 font-semibold uppercase">My Favourites</h2>
             <Link
-              to="/products"
+              to="/products/all"
               className="space-y-2 font-semibold hover:font-bold transition-all duration-300 text-indigo-600"
             >
               <span className="inset-0" aria-hidden="true"></span>Shop all
@@ -35,7 +35,9 @@ const Favourite = () => {
 
           {/* card body */}
           {favouriteProducts?.length ? (
-            <FeaturedProducts />
+            <div className="grid grid-cols-1 xxs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 place-items-center gap-y-6 gap-x-6 pt-6">
+              <FeaturedProducts />
+            </div>
           ) : (
             <p className="pt-6 text-center font-medium">
               No favourites to display

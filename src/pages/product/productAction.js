@@ -8,6 +8,7 @@ import {
 import {
   setFavouriteProducts,
   setFeaturedProducts,
+  setMenuProducts,
   setSelectedProduct,
   setSubcategoryProducts,
 } from "./productSlice";
@@ -37,6 +38,15 @@ export const getProductsBySubCategoryIdAction = (obj) => async (dispatch) => {
     }
   } else {
     dispatch(setSubcategoryProducts([]));
+  }
+};
+
+// get all active products for menu
+export const getAllProductsForMenuAction = () => async (dispatch) => {
+  const { status, findResult } = await getProducts({ menu: "true" });
+
+  if (status === "success") {
+    dispatch(setMenuProducts(findResult));
   }
 };
 

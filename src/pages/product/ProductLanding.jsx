@@ -1,10 +1,11 @@
-import React, { useEffect, useState, Fragment } from "react";
+import React, { useEffect, useState, Fragment, useRef } from "react";
 import { ChevronUpDownIcon } from "@heroicons/react/20/solid";
 import { RadioGroup, Listbox, Transition } from "@headlessui/react";
 import MainLayout from "../../components/layouts/MainLayout";
 import { Link, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  getFeaturedProductsAction,
   getSelectedProductAction,
   postNewFavouriteItemAction,
 } from "./productAction";
@@ -16,6 +17,7 @@ import { postNewCartItemAction } from "../cart/cartAction";
 import { autoLogin } from "../user/userAction";
 import { getReviewAction } from "./reviewAction";
 import { FaStarHalfStroke } from "react-icons/fa6";
+import FeaturedProducts from "../../components/products/FeaturedProducts";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -34,6 +36,42 @@ const ProductLanding = () => {
   const [productThumbnail, setProductThumbnail] = useState("");
   const [selected, setSelected] = useState(null);
   const [checked, setChecked] = useState(1);
+  const imageContainerRef = useRef(null);
+  const [showPrevNextButton, setShowPrevNextButton] = useState(false);
+  const [showTopBottomButton, setShowTopBottomButton] = useState(false);
+
+  useEffect(() => {
+    const container = imageContainerRef.current;
+
+    if (container) {
+      const handleScroll = () => {
+        setShowPrevNextButton(
+          container.scrollWidth - container.clientWidth > 0
+        );
+        setShowTopBottomButton(
+          container.scrollHeight - container.clientHeight > 0
+        );
+      };
+
+      const handleResize = () => {
+        handleScroll(); // Call handleScroll to update button visibility
+      };
+
+      container.addEventListener("scroll", handleScroll);
+      window.addEventListener("resize", handleResize);
+
+      // Initial check after a short delay to ensure rendering
+      setTimeout(() => {
+        handleScroll();
+      }, 10);
+
+      // Clean up
+      return () => {
+        container.removeEventListener("scroll", handleScroll);
+        window.removeEventListener("resize", handleResize);
+      };
+    }
+  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -52,6 +90,9 @@ const ProductLanding = () => {
       dispatch(getSelectedCategoryAction({ _id: selectedProduct.categoryId }));
       dispatch(
         getSelectedProductSubCategoryAction(selectedProduct.subCategoryId)
+      );
+      dispatch(
+        getFeaturedProductsAction({ categoryId: selectedProduct.categoryId })
       );
       setSelected(selectedProduct.variants[0]); //default variant
       setProductThumbnail(selectedProduct.thumbnail); //default thumbnail
@@ -117,101 +158,128 @@ const ProductLanding = () => {
 
   const averageRating = reviews.length > 0 ? totalRatings / reviews.length : 0;
 
+  const scrollImage = (scrollDirection) => {
+    if (imageContainerRef.current) {
+      if (scrollDirection === "next") {
+        imageContainerRef.current.scrollLeft +=
+          imageContainerRef.current.offsetWidth;
+      } else if (scrollDirection === "prev") {
+        imageContainerRef.current.scrollLeft -=
+          imageContainerRef.current.offsetWidth;
+      } else if (scrollDirection === "top") {
+        imageContainerRef.current.scrollTop -=
+          imageContainerRef.current.offsetHeight;
+      } else if (scrollDirection === "bottom") {
+        imageContainerRef.current.scrollTop +=
+          imageContainerRef.current.offsetHeight;
+      }
+    }
+  };
+
   return (
     <MainLayout>
-      <div className="bg-gray-50 flex justify-center">
+      <div className="bg-gray-50 flex justify-center pb-8">
         <div className="py-6 px-6 lg:px-8">
           {/* breadcrumb */}
           <nav aria-label="Breadcrumb">
-            <ol role="list" className="mx-auto flex items-center space-x-2">
+            <ol
+              role="list"
+              className="mx-auto flex items-center flex-wrap space-x-2"
+            >
               {/* home */}
               <li className="">
                 <div className="flex items-center">
-                  <Link
-                    to="/"
-                    className="mr-2 text-sm font-medium capitalize text-gray-700"
+                  <a
+                    href="/"
+                    className="mr-2 text-sm font-medium capitalize text-gray-800"
                   >
                     Home
-                  </Link>
-                  <svg
-                    width={16}
-                    height={20}
-                    viewBox="0 0 16 20"
-                    fill="currentColor"
-                    aria-hidden="true"
-                    className="h-5 w-4 text-gray-300"
-                  >
-                    <path d="M5.697 4.34L8.98 16.532h1.327L7.025 4.341H5.697z" />
-                  </svg>
+                  </a>
+                  <div>
+                    <svg
+                      width={16}
+                      height={20}
+                      viewBox="0 0 16 20"
+                      fill="currentColor"
+                      aria-hidden="true"
+                      className="h-5 w-4 text-gray-300"
+                    >
+                      <path d="M5.697 4.34L8.98 16.532h1.327L7.025 4.341H5.697z" />
+                    </svg>
+                  </div>
                 </div>
               </li>
 
               {/* category */}
               <li className="">
                 <div className="flex items-center">
-                  <Link
-                    to={`/categories/` + selectedCategory?.slug}
-                    className="mr-2 text-sm font-medium capitalize text-gray-700"
+                  <a
+                    href={`/products?category=${selectedCategory?.slug}`}
+                    className="mr-2 text-sm font-medium capitalize text-gray-800 text-nowrap"
                   >
                     {selectedCategory?.title}
-                  </Link>
-                  <svg
-                    width={16}
-                    height={20}
-                    viewBox="0 0 16 20"
-                    fill="currentColor"
-                    aria-hidden="true"
-                    className="h-5 w-4 text-gray-300"
-                  >
-                    <path d="M5.697 4.34L8.98 16.532h1.327L7.025 4.341H5.697z" />
-                  </svg>
+                  </a>
+                  <div>
+                    <svg
+                      width={16}
+                      height={20}
+                      viewBox="0 0 16 20"
+                      fill="currentColor"
+                      aria-hidden="true"
+                      className="h-5 w-4 text-gray-300"
+                    >
+                      <path d="M5.697 4.34L8.98 16.532h1.327L7.025 4.341H5.697z" />
+                    </svg>
+                  </div>
                 </div>
               </li>
 
               {/* subcategory */}
               <li className="">
                 <div className="flex items-center">
-                  <Link
-                    to={`/subcategories/` + selectedSubCategory?.slug}
-                    className="mr-2 text-sm font-medium capitalize text-gray-700"
+                  <a
+                    href={`/products?category=${selectedCategory?.slug}&subcategory=${selectedSubCategory?.slug}`}
+                    className="mr-2 text-sm font-medium capitalize text-gray-800"
                   >
                     {selectedSubCategory?.title}
-                  </Link>
-                  <svg
-                    width={16}
-                    height={20}
-                    viewBox="0 0 16 20"
-                    fill="currentColor"
-                    aria-hidden="true"
-                    className="h-5 w-4 text-gray-300"
-                  >
-                    <path d="M5.697 4.34L8.98 16.532h1.327L7.025 4.341H5.697z" />
-                  </svg>
+                  </a>
+                  <div>
+                    <svg
+                      width={16}
+                      height={20}
+                      viewBox="0 0 16 20"
+                      fill="currentColor"
+                      aria-hidden="true"
+                      className="h-5 w-4 text-gray-300"
+                    >
+                      <path d="M5.697 4.34L8.98 16.532h1.327L7.025 4.341H5.697z" />
+                    </svg>
+                  </div>
                 </div>
               </li>
 
               {/* product */}
               <li className="text-sm">
-                <Link
-                  to={`/products/` + selectedProduct?.slug}
+                <span
                   aria-current="page"
-                  className="font-medium capitalize text-gray-500 hover:text-gray-600"
+                  className="font-medium capitalize text-gray-600 hover:text-gray-800 transition-all duration-300 cursor-pointer"
                 >
                   {selectedProduct?.name}
-                </Link>
+                </span>
               </li>
             </ol>
           </nav>
 
+          {/* Product Details */}
           <div className="mt-6 lg:grid lg:max-w-7xl lg:grid-cols-2 lg:gap-x-8">
             {/* Image gallery */}
-            <div className="flex flex-col sm:flex-row justify-between gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-[minmax(100px,_1fr)_100px] gap-4">
               {/* thumbnail */}
-              <div className="w-full h-[30rem] overflow-hidden border border-gray-700 rounded relative">
+              <div className="w-full h-[30rem] overflow-hidden border border-gray-800 rounded relative">
                 <img
                   src={productThumbnail}
                   alt={`${selectedProduct?.name}-image-thumbnail`}
-                  className="absolute top-0 left-0 w-full h-full object-fit-cover p-1 rounded-lg overflow-hidden"
+                  className="absolute top-0 left-0 h-full w-full p-1 rounded"
                 />
 
                 {/* add to favourite button */}
@@ -225,7 +293,6 @@ const ProductLanding = () => {
                         : "text-gray-400 hover:text-gray-200",
                       "transition ease-in duration-300 bg-gray-800 shadow rounded-full w-8 h-8 text-center p-1"
                     )}
-                    // onClick={handleOnAddFavouriteBtn}
                     onClick={() =>
                       handleOnAddFavouriteBtn(
                         favouriteProducts.filter(
@@ -268,24 +335,115 @@ const ProductLanding = () => {
               </div>
 
               {/* other images */}
-              <div className="w-full sm:h-[30rem] sm:w-52 flex sm:flex-col overflow-y-hidden sm:overflow-y-scroll overflow-x-scroll sm:overflow-x-hidden border border-gray-700 rounded relative">
-                {selectedProduct?.images?.map((item, i) => (
-                  <button
-                    key={i}
-                    className=""
-                    onClick={() => setProductThumbnail(item)}
-                  >
-                    <div className="px-1 py-0.5 h-full w-full">
-                      <div className="w-52 sm:w-full">
+              <div
+                className={classNames(
+                  showPrevNextButton || showTopBottomButton
+                    ? "mx-6 sm:mx-0 sm:my-6"
+                    : "",
+                  "sm:h-[27rem] relative"
+                )}
+              >
+                <div
+                  className="sm:h-[27rem] w-full flex sm:flex-col gap-4 overflow-auto scroll-smooth"
+                  ref={imageContainerRef}
+                >
+                  {selectedProduct?.images?.map((item, i) => (
+                    <button
+                      key={i}
+                      className="relative"
+                      onClick={() => setProductThumbnail(item)}
+                    >
+                      <div className="h-[100px] w-[100px] border border-gray-800 rounded overflow-hidden">
                         <img
                           src={item}
                           alt={`${selectedProduct?.name}-image-${i}`}
-                          className="h-[8rem] w-full object-fill object-center border border-gray-700 rounded"
+                          className="absolute top-0 left-0 h-full w-full p-1 rounded"
                         />
                       </div>
-                    </div>
+                    </button>
+                  ))}
+                </div>
+                {/* scroll left-right */}
+                {showPrevNextButton && (
+                  <button
+                    onClick={() => scrollImage("prev")}
+                    className="absolute top-6 -left-6 transform translate-y-1/2 sm:hidden"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="bg-gray-800"
+                      className="w-6 h-6"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm-4.28 9.22a.75.75 0 0 0 0 1.06l3 3a.75.75 0 1 0 1.06-1.06l-1.72-1.72h5.69a.75.75 0 0 0 0-1.5h-5.69l1.72-1.72a.75.75 0 0 0-1.06-1.06l-3 3Z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
                   </button>
-                ))}
+                )}
+
+                {showPrevNextButton && (
+                  <button
+                    onClick={() => scrollImage("next")}
+                    className="absolute top-6 -right-6 transform translate-y-1/2 sm:hidden"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="bg-gray-800"
+                      className="w-6 h-6"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm4.28 10.28a.75.75 0 0 0 0-1.06l-3-3a.75.75 0 1 0-1.06 1.06l1.72 1.72H8.25a.75.75 0 0 0 0 1.5h5.69l-1.72 1.72a.75.75 0 1 0 1.06 1.06l3-3Z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                  </button>
+                )}
+
+                {/* scroll top-bottom */}
+                {showTopBottomButton && (
+                  <button
+                    onClick={() => scrollImage("top")}
+                    className="absolute -top-6 left-8 hidden sm:block"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="bg-gray-800"
+                      className="w-6 h-6"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm.53 5.47a.75.75 0 0 0-1.06 0l-3 3a.75.75 0 1 0 1.06 1.06l1.72-1.72v5.69a.75.75 0 0 0 1.5 0v-5.69l1.72 1.72a.75.75 0 1 0 1.06-1.06l-3-3Z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                  </button>
+                )}
+
+                {showTopBottomButton && (
+                  <button
+                    onClick={() => scrollImage("bottom")}
+                    className="absolute -bottom-6 right-8 hidden sm:block"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="bg-gray-800"
+                      className="w-6 h-6"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm-.53 14.03a.75.75 0 0 0 1.06 0l3-3a.75.75 0 1 0-1.06-1.06l-1.72 1.72V8.25a.75.75 0 0 0-1.5 0v5.69l-1.72-1.72a.75.75 0 0 0-1.06 1.06l3 3Z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                  </button>
+                )}
               </div>
             </div>
 
@@ -293,14 +451,14 @@ const ProductLanding = () => {
             <div className="max-w-2xl pt-6 lg:pt-0">
               {/* product name */}
               <div className="">
-                <h1 className="text-2xl font-bold tracking-tight uppercase text-gray-700 md:text-3xl">
+                <h1 className="text-2xl font-bold tracking-tight uppercase text-gray-800 md:text-3xl">
                   {selectedProduct.name}
                 </h1>
               </div>
 
               {/* price */}
               <div className="mt-4">
-                <p className="text-2xl tracking-tight text-gray-700">
+                <p className="text-2xl tracking-tight text-gray-800">
                   AU${" "}
                   {selected?.salesPrice ? (
                     <>
@@ -368,7 +526,7 @@ const ProductLanding = () => {
 
                     <Link
                       to="#"
-                      className="text-sm font-medium text-gray-700 hover:text-gray-600 hover:underline cursor-pointer"
+                      className="text-sm font-medium text-gray-800 hover:text-gray-600 hover:underline cursor-pointer"
                     >
                       {reviews.length} reviews
                     </Link>
@@ -379,15 +537,9 @@ const ProductLanding = () => {
                   {/* Sizes */}
                   <div className="mt-10">
                     <div className="flex items-center justify-between">
-                      <h3 className="text-sm font-medium text-gray-700">
+                      <h3 className="text-sm font-medium text-gray-800">
                         Size
                       </h3>
-                      <a
-                        href="#"
-                        className="text-sm font-medium text-gray-700 hover:text-gray-600 hover:underline"
-                      >
-                        Size guide
-                      </a>
                     </div>
 
                     <RadioGroup
@@ -395,7 +547,7 @@ const ProductLanding = () => {
                       onChange={changeOnSelect}
                       className="mt-4"
                     >
-                      <div className="grid grid-cols-4 gap-4">
+                      <div className="grid grid-cols-2 xxs:grid-cols-3 xs:grid-cols-4 lg:grid-cols-3 gap-4">
                         {selectedProduct?.variants?.map((plan) => (
                           <RadioGroup.Option
                             key={plan.size}
@@ -408,7 +560,7 @@ const ProductLanding = () => {
                                   ? "ring-2 ring-white/60 ring-offset-2 ring-offset-gray-500"
                                   : ""
                               }
-                  ${checked ? "bg-gray-700 text-gray-100" : "bg-gray-100"}
+                  ${checked ? "bg-gray-800 text-gray-100" : "bg-gray-100"}
                     relative flex cursor-pointer rounded-lg px-5 py-4 shadow-md focus:outline-none`
                             }
                           >
@@ -422,7 +574,7 @@ const ProductLanding = () => {
                                         className={`font-medium uppercase ${
                                           checked
                                             ? "text-gray-100"
-                                            : "text-gray-700"
+                                            : "text-gray-800"
                                         }`}
                                       >
                                         {plan.size}
@@ -448,11 +600,11 @@ const ProductLanding = () => {
                     <Listbox value={checked} onChange={setChecked}>
                       {({ open }) => (
                         <>
-                          <Listbox.Label className="block text-sm font-medium leading-6 text-gray-700">
+                          <Listbox.Label className="block text-sm font-medium leading-6 text-gray-800">
                             Quantity
                           </Listbox.Label>
                           <div className="relative mt-2">
-                            <Listbox.Button className="relative w-full cursor-default rounded-md bg-white py-1.5 pl-3 pr-10 text-left text-gray-700 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-700 sm:text-sm sm:leading-6">
+                            <Listbox.Button className="relative w-full cursor-default rounded-md bg-white py-1.5 pl-3 pr-10 text-left text-gray-800 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-800 sm:text-sm sm:leading-6">
                               <span className="flex items-center">
                                 <span className="ml-3 block truncate">
                                   {checked}
@@ -481,8 +633,8 @@ const ProductLanding = () => {
                                       className={({ active }) =>
                                         classNames(
                                           active
-                                            ? "bg-gray-700 text-gray-100"
-                                            : "text-gray-700",
+                                            ? "bg-gray-800 text-gray-100"
+                                            : "text-gray-800",
                                           "relative cursor-default select-none py-2 pl-3 pr-9"
                                         )
                                       }
@@ -508,7 +660,7 @@ const ProductLanding = () => {
                                               className={classNames(
                                                 active
                                                   ? "text-gray-100"
-                                                  : "text-gray-700",
+                                                  : "text-gray-800",
                                                 "absolute inset-y-0 right-0 flex items-center pr-4"
                                               )}
                                             >
@@ -534,7 +686,7 @@ const ProductLanding = () => {
                   {/* Description and details */}
                   <div className="">
                     <div className="mt-10">
-                      <h2 className="text-sm font-medium text-gray-700">
+                      <h2 className="text-sm font-medium text-gray-800">
                         Description
                       </h2>
 
@@ -549,13 +701,28 @@ const ProductLanding = () => {
                   {/* add to cart btn */}
                   <button
                     type="submit"
-                    className="mt-10 flex w-full items-center justify-center rounded-md border border-transparent bg-gray-700 px-8 py-3 text-base font-medium text-gray-100 hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-700 focus:ring-offset-2"
+                    className="mt-10 flex w-full items-center justify-center rounded-md border border-transparent bg-gray-800 px-8 py-3 text-base font-medium text-gray-100 hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-800 focus:ring-offset-2"
                   >
                     Add to bag
                   </button>
                 </form>
               </div>
             </div>
+          </div>
+        </div>
+      </div>
+
+      {/* you may also like */}
+      <div className="bg-gray-100 py-12">
+        <div className="mx-auto max-w-4xl px-4 lg:max-w-7xl lg:px-6 divide-y divide-gray-500/30">
+          <div className="flex flex-col xxs:flex-row xxs:justify-between pb-6">
+            <h2 className="space-y-2 font-semibold uppercase">
+              You may also like
+            </h2>
+          </div>
+
+          <div className="flex overflow-x-scroll gap-x-6 pt-6">
+            <FeaturedProducts />
           </div>
         </div>
       </div>
